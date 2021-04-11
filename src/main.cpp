@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-11 13:41:36
+* @Last Modified time: 2021-04-11 13:49:52
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -23,7 +23,7 @@ int main()
 	Ant test(utils::rand::urand(0,WIDTH), utils::rand::urand(0,HEIGHT), 1);
 	// Create the main window
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "c++an't [sic]");
-	sf::setVerticalSyncEnabled(0);
+	window.setVerticalSyncEnabled(0);
 	sf::Clock renderClock;
 	sf::Time elapsed = sf::seconds(0); 
 
@@ -39,7 +39,11 @@ int main()
 				window.close();
 		}
 
-
+		elapsed += renderClock.restart();
+		while(elapsed > frameTime)
+		{
+			elapsed -= frameTime;
+		}
 
 		window.clear();
 
@@ -55,6 +59,7 @@ int main()
 		std::cout << x << std::endl;
 		x++;
 		window.display();
+		sf::sleep(frameTime-renderClock.restart());
 	}
 
 	return 0;
