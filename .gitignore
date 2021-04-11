@@ -34,3 +34,9 @@ obj/
 *.exe
 *.out
 *.app
+
+# CLion files
+**/.idea
+
+# Appease CLion
+CMakeLists.txt
