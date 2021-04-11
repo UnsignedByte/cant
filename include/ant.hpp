@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include "utils.h"
+#include "utils.hpp"
 
 
 struct Ant
