@@ -36,7 +36,7 @@ int main()
 
 		// std::cout << render << std::endl;
 		window.draw(*render);
-		delete(render);
+		delete render;
 
 		window.display();
 	}
