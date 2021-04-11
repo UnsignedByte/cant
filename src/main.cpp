@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-11 13:49:52
+* @Last Modified time: 2021-04-11 13:55:41
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -14,7 +14,7 @@
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
-const sf::Time frameTime = sf::seconds(1.f/60.f);
+const sf::Time frameTime = sf::seconds(1.f/30.f);
 
 
 int main()
@@ -37,12 +37,6 @@ int main()
 			// Close window: exit
 			if (event.type == sf::Event::Closed)
 				window.close();
-		}
-
-		elapsed += renderClock.restart();
-		while(elapsed > frameTime)
-		{
-			elapsed -= frameTime;
 		}
 
 		window.clear();
