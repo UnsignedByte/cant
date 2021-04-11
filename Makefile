@@ -4,6 +4,5 @@ main: main.cc ant.o utils.o
 utils.o: utils.cc utils.hh
 	g++ -c utils.cc -o utils.o
 
-
-utils.o: ant.cc ant.hh
+ant.o: ant.cc ant.hh
 	g++ -c ant.cc -o ant.o
