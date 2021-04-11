@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "ant.hh"
+#include "ant.h"
 #include <cstring>
 
 sf::CircleShape* Ant::render()

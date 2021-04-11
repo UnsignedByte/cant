@@ -1,8 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <cmath>
-#include "ant.hh"
-#include "utils.hh"
+#include "ant.h"
+#include "utils.h"
 #include <iostream>
 #include <cstring>
 

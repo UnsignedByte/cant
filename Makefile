@@ -4,8 +4,8 @@ BIN_DIR := bin
 
 MAIN := $(BIN_DIR)/main #output exe
 
-SRC := $(wildcard $(SRC_DIR)/*.cc)
-OBJ := $(patsubst $(SRC_DIR)/%.cc, $(OBJ_DIR)/%.o, $(SRC)) # Convert .cc files to .o
+SRC := $(wildcard $(SRC_DIR)/*.cpp)
+OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC)) # Convert .cpp files to .o
 
 CXXFLAGS := -Iinclude
 LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system
@@ -17,7 +17,7 @@ all: $(MAIN)
 $(MAIN): $(OBJ) | $(BIN_DIR)
 	$(CXX) $^ -o $@ $(LDLIBS) 
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(BIN_DIR) $(OBJ_DIR):
