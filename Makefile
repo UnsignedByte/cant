@@ -1,24 +1,33 @@
 SRC_DIR := src
+LIB_DIR := lib
 OBJ_DIR := obj
 BIN_DIR := bin
 
-MAIN := $(BIN_DIR)/main #output exe
+EXE := $(BIN_DIR)/exe
 
-SRC := $(wildcard $(SRC_DIR)/*.cpp)
-OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRC)) # Convert .cpp files to .o
+LIB := $(wildcard $(LIB_DIR)/*.cpp)
+OBJ := $(patsubst $(LIB_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(LIB)) # Convert .cpp files to .o
 
-CXXFLAGS := -Iinclude
+CXXFLAGS := -Ilib
 LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system
 
-.PHONY: all clean
+.PHONY: build dev clean
 
-all: $(MAIN)
+NAME := main
 
-$(MAIN): $(OBJ) | $(BIN_DIR)
-	$(CXX) $^ -o $@ $(LDLIBS) 
+build: $(EXE)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+dev: NAME := dev
+dev: $(EXE)
+
+$(EXE): $(OBJ) $(OBJ_DIR)/$(NAME).o | $(BIN_DIR)
+	$(CXX) $^ -o $@ $(LDLIBS)
+
+$(OBJ_DIR)/$(NAME).o: $(SRC_DIR)/$(NAME).cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $^ -o $@
+
+$(OBJ_DIR)/%.o: $(LIB_DIR)/%.cpp | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $^ -o $@
 
 $(BIN_DIR) $(OBJ_DIR):
 	mkdir -p $@
