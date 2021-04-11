@@ -1,8 +1,29 @@
-main: main.cc ant.o utils.o
-	g++ main.cc ant.o utils.o -o main -lsfml-graphics -lsfml-window -lsfml-system
+SRC_DIR := src
+OBJ_DIR := obj
+BIN_DIR := bin
 
-utils.o: utils.cc utils.hh
-	g++ -c utils.cc -o utils.o
+MAIN := $(BIN_DIR)/main #output exe
 
-ant.o: ant.cc ant.hh
-	g++ -c ant.cc -o ant.o
+SRC := $(wildcard $(SRC_DIR)/*.cc)
+OBJ := $(patsubst $(SRC_DIR)/%.cc, $(OBJ_DIR)/%.o, $(SRC)) # Convert .cc files to .o
+
+CXXFLAGS := -Iinclude
+LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system
+
+.PHONY: all clean
+
+all: $(MAIN)
+
+$(MAIN): $(OBJ) | $(BIN_DIR)
+	$(CXX) $^ -o $@ $(LDLIBS) 
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cc | $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BIN_DIR) $(OBJ_DIR):
+	mkdir -p $@
+
+clean:
+	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR)
+
+-include $(OBJ:.o=.d)
