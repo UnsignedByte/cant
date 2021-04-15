@@ -6,6 +6,8 @@
 #define CANT_MATRIX_HPP
 
 #include <string>
+#include <initializer_list>
+#include <sstream>
 
 // The matrix is just stored as an array of length width * height.
 
@@ -24,7 +26,7 @@ class Matrix {
 	bool in_bounds(int, int) const;
 
 	ValueType value_at(int row, int col) const;
-	ValueType unsafe_value_at(int row, int col) const;
+	inline ValueType unsafe_value_at(int row, int col) const;
 
 	ValueType sum() const;
 
@@ -33,9 +35,7 @@ class Matrix {
 	static constexpr int width = cols;
 	static constexpr int height = rows;
 
-	/*template <typename... Values,
-					typename = typename std::enable_if<sizeof...(Args) == width * height>::type>
-	void set_values();*/
+	void set_values(std::initializer_list<ValueType> values);
 
 	private:
 	ValueType* _matrix_data;
@@ -43,7 +43,10 @@ class Matrix {
 };
 
 void throw_domain_error(int row, int col, int rows, int cols) {
-	throw std::domain_error(std::format("Out-of-bounds access at {}, {} on matrix of size {} x {}.", row, col, rows, cols));
+	std::stringstream os;
+	os << "Out-of-bounds access at " << row << ", " << col << " on matrix of size " << rows << " x " << cols;
+
+	throw std::domain_error(os.str());
 }
 
 template <int rows, int cols, class ValueType>
@@ -67,7 +70,7 @@ ValueType Matrix<rows, cols, ValueType>::value_at(int row, int col) const {
 }
 
 template <int rows, int cols, class ValueType>
-ValueType Matrix<rows, cols, ValueType>::unsafe_value_at(int row, int col) const {
+inline ValueType Matrix<rows, cols, ValueType>::unsafe_value_at(int row, int col) const {
 	return _matrix_data[cols * row + col];
 }
 
@@ -92,6 +95,13 @@ ValueType Matrix<rows, cols, ValueType>::sum() const {
 template <int rows, int cols, typename ValueType>
 Matrix<rows, cols, ValueType>::~Matrix() {
 	delete[] _matrix_data;
+}
+
+template <int rows, int cols, typename ValueType>
+void Matrix<rows, cols, ValueType>::set_values(std::initializer_list<ValueType> args) {
+	static_assert(args.size() <= width * height, "Too many arguments to set_values.");
+
+
 }
 
 #endif //CANT_MATRIX_HPP
