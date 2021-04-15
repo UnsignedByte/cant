@@ -13,7 +13,7 @@ LDLIBS := -std=c++17 -lsfml-graphics -lsfml-window -lsfml-system
 
 .PHONY: build dev clean
 
-NAME := matrix_test
+NAME := main
 
 build: $(EXE)
 

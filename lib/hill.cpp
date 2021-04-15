@@ -2,16 +2,17 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-14 23:58:43
+* @Last Modified time: 2021-04-15 13:11:59
 */
 #include "hill.hpp"
+#define HILL_SIZE 5.f
 
 int Hill::antCount() const
 {
 	return _ants.size();
 }
 
-void Hill::render(sf::RenderWindow* win) const
+void Hill::render(sf::RenderTexture* win) const
 {
 	sf::VertexArray ants(sf::Triangles, antCount()*3);
 	for(int i = 0; i < antCount(); i++)
@@ -19,10 +20,10 @@ void Hill::render(sf::RenderWindow* win) const
 		_ants[i].render(ants, i*3);
 	}
 	win->draw(ants);
-	// sf::CircleShape hill(10.f);
-	// hill.setPosition(_pos);
-	// hill.setFillColor(sf::Color(148, 102, 28, 255));
-	// win->draw(hill);
+	sf::CircleShape hill(HILL_SIZE);
+	hill.setPosition(_pos-sf::Vector2f(HILL_SIZE/2, HILL_SIZE/2));
+	hill.setFillColor(sf::Color(148, 102, 28, 255));
+	win->draw(hill);
 }
 
 void Hill::tick() //calculate movements for all ants in hill

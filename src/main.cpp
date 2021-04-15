@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-15 00:07:08
+* @Last Modified time: 2021-04-15 13:12:50
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -22,17 +22,21 @@ const sf::Time frameTime = sf::seconds(1.f/30.f);
 int main()
 {
 	int x = 0;
-	Ant test(utils::rand::urand(0,WIDTH), utils::rand::urand(0,HEIGHT), 1);
 	// Create the main window
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "c++an't [sic]");
 	window.setVerticalSyncEnabled(0);
 	sf::Clock renderClock;
 	sf::Time elapsed = sf::seconds(0); 
 
+	sf::RenderTexture rt;
+	if (!rt.create(WIDTH, HEIGHT))
+	{
+		return -1;
+	}
 
-	Render renderer(&window);
+	Render renderer(&rt);
 
-	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 10));
+	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 200000));
 
 	// window.setFramerateLimit(60);
 	while (window.isOpen())
@@ -51,6 +55,8 @@ int main()
 		renderer.tick();
 
 		renderer.renderHills();
+
+		window.draw(sf::Sprite((*renderer.getTex()).getTexture()));
 
 		window.display();
 

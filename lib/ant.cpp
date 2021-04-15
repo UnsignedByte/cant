@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-15 00:38:55
+* @Last Modified time: 2021-04-15 10:27:58
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -19,7 +19,6 @@ void Ant::move()
 
 void Ant::render(sf::VertexArray& arr, int i) const
 {
-	std::cout << "egg" << i << " " << _pos.x << " " << _pos.y << std::endl;
 	arr[i].position = _pos;
 	arr[i+1].position = _pos+(_dir+5.f/6*M_PI).getVec()*ANT_SIZE-_dir.getVec()*ANT_SIZE;
 	arr[i+2].position = _pos+(_dir-5.f/6*M_PI).getVec()*ANT_SIZE-_dir.getVec()*ANT_SIZE;

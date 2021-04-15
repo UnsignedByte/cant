@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-14 23:47:57
+* @Last Modified time: 2021-04-15 12:25:02
 */
 
 #pragma once
@@ -14,7 +14,7 @@ struct Render
 public:
 	Render() = default;
 
-	Render(sf::RenderWindow* window): _window(window)
+	Render(sf::RenderTexture* world): _world(world)
 	{
 	}
 
@@ -23,7 +23,10 @@ public:
 	void tick();
 
 	void renderHills() const;
+
+	sf::RenderTexture* getTex() const;
+
 	std::vector<Hill> hills;
 private:
-	sf::RenderWindow* _window;
+	sf::RenderTexture* _world;
 };

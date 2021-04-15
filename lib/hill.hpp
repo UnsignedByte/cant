@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-14 23:44:53
+* @Last Modified time: 2021-04-15 13:02:08
 */
 
 #pragma once
@@ -30,7 +30,7 @@ public:
 
 	int antCount() const;
 
-	void render(sf::RenderWindow* win) const;
+	void render(sf::RenderTexture* win) const;
 
 private:
 	std::vector<Ant> _ants; // list of ants
