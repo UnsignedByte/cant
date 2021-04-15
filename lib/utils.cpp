@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-11 12:26:35
+* @Last Modified time: 2021-04-15 00:27:46
 */
 #include <random>
 #include <SFML/System.hpp>
@@ -27,12 +27,6 @@ namespace utils
 	}
 	namespace math
 	{
-		void Angle::setAngle(float angle)
-		{
-			_angle = angle;
-			updateVec();
-		}
-
 		void Angle::operator +=(float a)
 		{
 			_angle+=a;
@@ -42,6 +36,32 @@ namespace utils
 		void Angle::operator +=(Angle a)
 		{
 			_angle+=a.getAngle();
+			updateVec();
+		}
+
+		Angle Angle::operator +(float a) const
+		{
+			return Angle(a+_angle);
+		}
+
+		Angle Angle::operator +(Angle a) const
+		{
+			return Angle(a.getAngle()+_angle);
+		}
+
+		Angle Angle::operator -(float a) const
+		{
+			return Angle(_angle-a);
+		}
+
+		Angle Angle::operator -(Angle a) const
+		{
+			return Angle(_angle-a.getAngle());
+		}
+
+		void Angle::setAngle(float angle)
+		{
+			_angle = angle;
 			updateVec();
 		}
 

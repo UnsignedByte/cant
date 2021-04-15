@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:20:16
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-11 14:10:51
+* @Last Modified time: 2021-04-14 23:58:36
 */
 #pragma once
 #include <iostream>
@@ -10,10 +10,17 @@
 #include "utils.hpp"
 #include <cmath>
 
+/**
+ * Ant class, contains a position and direction
+ */
 struct Ant
 {
 public:
 	Ant() = default;
+
+	Ant(sf::Vector2f pos): _pos(pos), _dir(0)
+	{
+	}
 
 	Ant(float x, float y): _pos(x,y), _dir(utils::rand::rand_01()*2*M_PI)
 	{
@@ -25,7 +32,7 @@ public:
 
 	void move();
 
-	sf::CircleShape* render();
+	void render(sf::VertexArray& arr, int i) const;
 
 	sf::Vector2f getPos() const;
 

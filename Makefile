@@ -24,10 +24,10 @@ $(EXE): $(OBJ) $(OBJ_DIR)/$(NAME).o | $(BIN_DIR)
 	$(CXX) $^ -o $@ $(LDLIBS)
 
 $(OBJ_DIR)/$(NAME).o: $(SRC_DIR)/$(NAME).cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $^ -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(OBJ_DIR)/%.o: $(LIB_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $^ -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(BIN_DIR) $(OBJ_DIR):
 	mkdir -p $@

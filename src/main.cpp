@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-11 13:55:41
+* @Last Modified time: 2021-04-15 00:07:08
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -11,6 +11,8 @@
 #include "utils.hpp"
 #include <iostream>
 #include <cstring>
+#include "render.hpp"
+#include "hill.hpp"
 
 const int WIDTH = 800;
 const int HEIGHT = 600;
@@ -27,6 +29,11 @@ int main()
 	sf::Clock renderClock;
 	sf::Time elapsed = sf::seconds(0); 
 
+
+	Render renderer(&window);
+
+	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 10));
+
 	// window.setFramerateLimit(60);
 	while (window.isOpen())
 	{
@@ -41,18 +48,13 @@ int main()
 
 		window.clear();
 
+		renderer.tick();
 
-		test.move();
+		renderer.renderHills();
 
-		auto render = test.render();
-
-		// std::cout << render << std::endl;
-		window.draw(*render);
-		delete render;
-
-		std::cout << x << std::endl;
-		x++;
 		window.display();
+
+		std::cout << renderClock.getElapsedTime().asMilliseconds() << std::endl;
 		sf::sleep(frameTime-renderClock.restart());
 	}
 
