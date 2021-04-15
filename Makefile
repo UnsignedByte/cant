@@ -9,11 +9,11 @@ LIB := $(wildcard $(LIB_DIR)/*.cpp)
 OBJ := $(patsubst $(LIB_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(LIB)) # Convert .cpp files to .o
 
 CXXFLAGS := -MMD -MP -Ilib
-LDLIBS := -lsfml-graphics -lsfml-window -lsfml-system
+LDLIBS := -std=c++17 -lsfml-graphics -lsfml-window -lsfml-system
 
 .PHONY: build dev clean
 
-NAME := main
+NAME := matrix_test
 
 build: $(EXE)
 
@@ -24,10 +24,10 @@ $(EXE): $(OBJ) $(OBJ_DIR)/$(NAME).o | $(BIN_DIR)
 	$(CXX) $^ -o $@ $(LDLIBS)
 
 $(OBJ_DIR)/$(NAME).o: $(SRC_DIR)/$(NAME).cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDLIBS)
 
 $(OBJ_DIR)/%.o: $(LIB_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@ $(LDLIBS)
 
 $(BIN_DIR) $(OBJ_DIR):
 	mkdir -p $@
