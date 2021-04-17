@@ -2,18 +2,19 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-15 13:09:49
+* @Last Modified time: 2021-04-16 23:33:21
 */
 
 #include <iostream>
 #include "render.hpp"
+// #include <SFML/OpenGL.hpp>
 
 void Render::addHill(Hill h)
 {
 	hills.push_back(h);
 }
 
-void Render::renderHills() const
+void Render::renderHills()
 {
 	for (int i = 0; i < hills.size(); i++)
 	{
@@ -23,14 +24,23 @@ void Render::renderHills() const
 
 void Render::tick() //tick all hills and conversely all ants
 {
-	_world->clear();
+	_world.clear();
 	for (Hill& h : hills)
 	{
 		h.tick();
 	}
+	sf::Vector2f offset(A-D,S-W);
+	updateView(offset);
 }
 
-sf::RenderTexture* Render::getTex() const
+sf::Sprite Render::getDrawn() const
 {
-	return _world;
+	return sf::Sprite(_world.getTexture());
+}
+
+void Render::updateView(sf::Vector2f& transposition) {
+	sf::View view = _world.getView();
+	view.move(transposition);
+	std::cout << view.getSize() << std::endl;
+	_world.setView(view);
 }

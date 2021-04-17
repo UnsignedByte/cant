@@ -2,9 +2,14 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-15 00:25:24
+* @Last Modified time: 2021-04-16 23:35:46
 */
 #pragma once
+
+namespace constants
+{
+	const movSpeed = 0.05;
+}
 
 namespace utils
 {
@@ -49,3 +54,5 @@ namespace utils
 		};
 	}
 }
+
+std::ostream& operator<<(std::ostream&, const sf::Vector2f);
