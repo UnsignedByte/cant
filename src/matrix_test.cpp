@@ -9,6 +9,7 @@
 #include <functional>
 #include <algorithm>
 #include <random>
+#include <iostream>
 #include "matrix.hpp"
 
 const int SIZE = 1000000;
@@ -53,9 +54,14 @@ void time_method(std::function< void(void) > functor, const char* name) {
 	std::printf("Method %s took %.3f milliseconds on average.\n", name, milliseconds);
 }
 
+double multiply(Matrix<2, 2> m1, int k) {
+	return m1.unsafe_value_at(0, 0);
+}
 
 int main() {
-	
+	Matrix<2, 2> m1 ({ 4, 5, 6, 1 });
+
+	std::cout << m1.sum();
 
 	return 0;
 }
