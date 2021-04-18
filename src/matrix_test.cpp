@@ -59,9 +59,11 @@ double multiply(Matrix<2, 2> m1, int k) {
 }
 
 int main() {
-	Matrix<2, 2> m1 ({ 4, 5, 6, 1 });
+	Matrix<2, 2> m1 ({ 4, 5, 4, 2});
 
-	std::cout << m1.sum();
+	m1.set_values({2.5, 1, 4, 2});
+
+	std::cout << m1.to_string();
 
 	return 0;
 }
