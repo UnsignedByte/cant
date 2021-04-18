@@ -2,9 +2,14 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-11 12:26:26
+* @Last Modified time: 2021-04-16 23:35:46
 */
 #pragma once
+
+namespace constants
+{
+	const movSpeed = 0.05;
+}
 
 namespace utils
 {
@@ -16,19 +21,27 @@ namespace utils
 	}
 	namespace math
 	{
+
+		//Angle class with helper functions; contains a direction and a vector
 		struct Angle
 		{
 		public:
 			Angle() = default;
 
-			Angle(float angle):_angle(angle)
+			Angle(float angle)
 			{
+				_angle = angle;
+				updateVec();
 			}
 
 			void setAngle(float angle);
 
 			void operator +=(float a);
 			void operator +=(Angle a);
+			Angle operator +(float a) const;
+			Angle operator +(Angle a) const;
+			Angle operator -(float a) const;
+			Angle operator -(Angle a) const;
 
 			float getAngle() const;
 
@@ -41,3 +54,5 @@ namespace utils
 		};
 	}
 }
+
+std::ostream& operator<<(std::ostream&, const sf::Vector2f);
