@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-16 23:20:45
+* @Last Modified time: 2021-04-18 22:07:19
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -33,7 +33,7 @@ int main()
 
 	Render renderer(WIDTH, HEIGHT);
 
-	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 500));
+	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 500, &renderer._world));
 
 	// window.setFramerateLimit(60);
 	while (window.isOpen())
@@ -98,7 +98,7 @@ int main()
 
 		window.display();
 
-		// std::cout << renderClock.getElapsedTime().asMilliseconds() << std::endl;
+		std::cout << renderClock.getElapsedTime().asMilliseconds() << std::endl;
 		sf::sleep(frameTime-renderClock.getElapsedTime());
 		renderClock.restart();
 	}

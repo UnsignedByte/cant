@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-16 23:17:20
+* @Last Modified time: 2021-04-18 21:42:09
 */
 #include "hill.hpp"
 #define HILL_SIZE 5.f

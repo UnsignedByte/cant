@@ -2,13 +2,13 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-16 23:35:46
+* @Last Modified time: 2021-04-18 22:00:08
 */
 #pragma once
 
 namespace constants
 {
-	const movSpeed = 0.05;
+	const float movSpeed = 0.05;
 }
 
 namespace utils
