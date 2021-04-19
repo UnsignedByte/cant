@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 22:08:35
+* @Last Modified time: 2021-04-18 23:10:30
 */
 
 #include <iostream>
@@ -29,13 +29,13 @@ void Render::tick() //tick all hills and conversely all ants
 	{
 		h.tick();
 	}
-	sf::Vector2f offset(D-A,W-S);
+	sf::Vector2f offset(D-A,S-W);
 	updateView(offset);
 }
 
 sf::Sprite Render::getDrawn() const
 {
-	return sf::Sprite(_world.getTexture());
+	return sf::Sprite(_world.getTexture(), sf::IntRect(_view));
 }
 
 unsigned int Render::getGLHandle() const
@@ -43,11 +43,13 @@ unsigned int Render::getGLHandle() const
 	return _world.getTexture().getNativeHandle();
 }
 
-void Render::updateView(sf::Vector2f& transposition) {
-	sf::View view = _world.getView();
-	view.move(transposition);
+void Render::updateView(sf::Vector2f transposition) {
+	transposition*=constants::movSpeed;
+	transposition.x*=_view.width;
+	transposition.y*=_view.height;
+	_view.left+=transposition.x;
+	_view.top+=transposition.y;
 	// std::cout << view.getSize() << std::endl;
-	_world.setView(view);
 }
 
 int Render::width() const

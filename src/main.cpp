@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 22:07:19
+* @Last Modified time: 2021-04-18 23:10:53
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -98,7 +98,7 @@ int main()
 
 		window.display();
 
-		std::cout << renderClock.getElapsedTime().asMilliseconds() << std::endl;
+		// std::cout << renderClock.getElapsedTime().asMilliseconds() << std::endl;
 		sf::sleep(frameTime-renderClock.getElapsedTime());
 		renderClock.restart();
 	}

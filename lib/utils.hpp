@@ -2,9 +2,10 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 22:00:08
+* @Last Modified time: 2021-04-18 23:01:18
 */
 #pragma once
+#include <SFML/Graphics.hpp>
 
 namespace constants
 {
@@ -56,3 +57,10 @@ namespace utils
 }
 
 std::ostream& operator<<(std::ostream&, const sf::Vector2f);
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const sf::Rect<T> v)
+{
+	os << "("<<v.top<<", "<<v.left<<", "<<v.width<<", "<<v.height<<")";
+	return os;
+}

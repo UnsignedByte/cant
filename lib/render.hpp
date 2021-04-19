@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 22:05:37
+* @Last Modified time: 2021-04-18 23:09:45
 */
 
 #pragma once
@@ -17,7 +17,7 @@ public:
 	bool W=0, A=0, S=0, D=0;
 	Render() = default;
 
-	Render(int WIDTH, int HEIGHT): WIDTH(WIDTH), HEIGHT(HEIGHT)
+	Render(int WIDTH, int HEIGHT): WIDTH(WIDTH), HEIGHT(HEIGHT), _view(0, 0, WIDTH, HEIGHT)
 	{
 		if (!_world.create(WIDTH, HEIGHT))
 		{
@@ -36,7 +36,7 @@ public:
 
 	void renderHills();
 
-	void updateView(sf::Vector2f&);
+	void updateView(sf::Vector2f);
 
 	unsigned int getGLHandle() const;
 
@@ -50,4 +50,5 @@ public:
 private:
 	int WIDTH;
 	int HEIGHT;
+	sf::FloatRect _view;
 };

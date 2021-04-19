@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 22:02:43
+* @Last Modified time: 2021-04-18 22:19:07
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -16,8 +16,9 @@ void Ant::move()
 	_dir+=(utils::rand::rand_01()-0.5f)/2.f;
 	_pos+=_dir.getVec();
 
-	_pos.x = std::fmod(_pos.x, _world->getSize().x);
-	_pos.y = std::fmod(_pos.y, _world->getSize().y);
+	sf::Vector2<unsigned int> sz = _world->getSize();
+	_pos.x = std::fmod(_pos.x+sz.x, sz.x);
+	_pos.y = std::fmod(_pos.y+sz.y, sz.y);
 }
 
 void Ant::render(sf::VertexArray& arr, int i) const
