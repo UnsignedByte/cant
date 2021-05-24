@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-23 19:12:02
+* @Last Modified time: 2021-05-24 14:41:36
 */
 
 #include <iostream>
@@ -16,6 +16,7 @@ void Render::addHill(Hill h)
 
 void Render::renderHills()
 {
+	_world.clear();
 	for (int i = 0; i < hills.size(); i++)
 	{
 		hills[i].render(_world);
@@ -24,11 +25,16 @@ void Render::renderHills()
 
 void Render::tick() //tick all hills and conversely all ants
 {
-	_world.clear();
-	for (Hill& h : hills)
-	{
-		h.tick();
-	}
+	// remove ants if tick() returns true, aka if ant is out of energy
+	hills.erase(
+		std::remove_if(hills.begin(), hills.end(),
+			[](Hill& a)
+			{
+				a.tick();
+				return a.E() <= 0;
+			}
+		), hills.end());
+	
 	sf::Vector2f offset(D-A,S-W);
 	updateView(offset);
 }
@@ -65,4 +71,14 @@ int Render::height() const
 sf::IntRect Render::bounds() const
 {
 	return _bounds;
+}
+
+int Render::E() const
+{
+	int TE = _E;
+	for(const Hill& h : hills)
+	{
+		TE += h.E();
+	}
+	return TE;
 }

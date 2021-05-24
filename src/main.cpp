@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-23 21:17:57
+* @Last Modified time: 2021-05-24 14:32:12
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -11,6 +11,7 @@
 #include "utils.hpp"
 #include <iostream>
 #include <cstring>
+#include <cstdio>
 #include "render.hpp"
 #include "hill.hpp"
 
@@ -33,7 +34,7 @@ int main()
 
 	Render renderer(WIDTH, HEIGHT);
 
-	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 500, &renderer._world));
+	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 100, 500, 100000, 1000000, &renderer._world));
 
 	// window.setFramerateLimit(60);
 	while (window.isOpen())

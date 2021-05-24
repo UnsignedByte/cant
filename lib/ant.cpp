@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-23 21:18:38
+* @Last Modified time: 2021-05-24 14:32:44
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -12,12 +12,14 @@
 
 const float ANT_SIZE = 3.f;
 
-void Ant::move()
+// returns TRUE if ant has died
+void Ant::tick()
 {
 	_dir+=(utils::rand::rand_01()-0.5f)/2.f;
 	_pos+=_dir.getVec();
 
 	_pos = arfmod(_pos, _world->getSize());
+	_E--;
 }
 
 bool Ant::render(sf::VertexArray& arr, int i) const
@@ -59,4 +61,9 @@ sf::Vector2f Ant::getPos() const
 utils::math::Angle Ant::getAngle() const
 {
 	return _dir;
+}
+
+int Ant::E() const
+{
+	return _E;
 }

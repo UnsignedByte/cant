@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-23 21:17:52
+* @Last Modified time: 2021-05-24 14:39:37
 */
 #include "hill.hpp"
 // #include <cstdio>
@@ -47,9 +47,26 @@ void Hill::render(sf::RenderTexture& win) const
 	win.draw(hill);
 }
 
+//returns true if hill has died (no energy)
 void Hill::tick() //calculate movements for all ants in hill
 {
-	for (int i = 0; i < _ants.size(); i++){
-		_ants[i].move();
+	// remove ants if tick() returns true, aka if ant is out of energy
+	_ants.erase(
+		std::remove_if(_ants.begin(), _ants.end(),
+			[](Ant& a)
+			{
+				a.tick();
+				return a.E() < 0;
+			}
+		), _ants.end());
+}
+
+int Hill::E() const
+{
+	int TE = _E;
+	for (const Ant& a : _ants)
+	{
+		TE+=a.E();
 	}
+	return TE;
 }
