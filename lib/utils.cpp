@@ -2,9 +2,10 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 22:58:29
+* @Last Modified time: 2021-05-23 20:52:05
 */
 #include <random>
+#include <cassert>
 #include <SFML/System.hpp>
 #include "utils.hpp"
 
@@ -87,4 +88,10 @@ std::ostream& operator<<(std::ostream& os, const sf::Vector2f v)
 {
 	os << "("<<v.x<<", "<<v.y<<")";
 	return os;
+}
+
+float arfmod(const float a, const float b)
+{
+	assert(b != 0);
+	return std::fmod(std::fmod(a,b)+b, b);
 }

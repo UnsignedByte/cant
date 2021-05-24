@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:20:16
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 21:57:30
+* @Last Modified time: 2021-05-23 20:49:14
 */
 #pragma once
 #include <iostream>
@@ -32,7 +32,7 @@ public:
 
 	void move();
 
-	void render(sf::VertexArray& arr, int i) const;
+	bool render(sf::VertexArray& arr, int i) const;
 
 	sf::Vector2f getPos() const;
 

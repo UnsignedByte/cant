@@ -2,14 +2,14 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 23:01:18
+* @Last Modified time: 2021-05-23 20:54:49
 */
 #pragma once
 #include <SFML/Graphics.hpp>
 
 namespace constants
 {
-	const float movSpeed = 0.05;
+	const float movSpeed = 0.01;
 }
 
 namespace utils
@@ -63,4 +63,14 @@ std::ostream& operator<<(std::ostream& os, const sf::Rect<T> v)
 {
 	os << "("<<v.top<<", "<<v.left<<", "<<v.width<<", "<<v.height<<")";
 	return os;
+}
+
+float arfmod(const float, const float);
+
+template <typename A, typename B>
+sf::Vector2f arfmod(const sf::Vector2<A>& a, const sf::Vector2<B>& b)
+{
+	sf::Vector2f j = sf::Vector2f(a);
+	sf::Vector2f k = sf::Vector2f(b);
+	return sf::Vector2f(arfmod(j.x, k.x), arfmod(j.y, k.y));
 }

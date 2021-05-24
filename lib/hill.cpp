@@ -2,10 +2,13 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 21:42:09
+* @Last Modified time: 2021-05-23 21:17:52
 */
 #include "hill.hpp"
-#define HILL_SIZE 5.f
+// #include <cstdio>
+
+const float HILL_SIZE = 5.f;
+const int DIRS[16] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
 
 int Hill::antCount() const
 {
@@ -14,11 +17,29 @@ int Hill::antCount() const
 
 void Hill::render(sf::RenderTexture& win) const
 {
-	sf::VertexArray ants(sf::Triangles, antCount()*3);
+	sf::FloatRect bounds = sf::FloatRect(sf::Vector2f(0,0), sf::Vector2f(_world->getSize()));
+	int C = antCount();
+	sf::VertexArray ants(sf::Triangles, C*3*9);
 	for(int i = 0; i < antCount(); i++)
 	{
-		_ants[i].render(ants, i*3);
+		if (_ants[i].render(ants, i*3))
+		{
+			for(int j = 0; j < 8; j++)
+			{
+				sf::Vector2f offset(DIRS[2*j]*bounds.width, DIRS[2*j+1]*bounds.height);
+				ants[C*3] = ants[i*3].position+offset;
+				ants[C*3+1] = ants[i*3+1].position+offset;
+				ants[C*3+2] = ants[i*3+2].position+offset;
+				if (bounds.contains(ants[C*3].position) || bounds.contains(ants[C*3+1].position) || bounds.contains(ants[C*3+2].position))
+				{
+					// draw second copy of triangle if ant wraps over limits
+					C++;
+				}
+			}
+		}
 	}
+	// printf("%d\n", C);
+	ants.resize(C*3);
 	win.draw(ants);
 	sf::CircleShape hill(HILL_SIZE);
 	hill.setPosition(_pos-sf::Vector2f(HILL_SIZE/2, HILL_SIZE/2));

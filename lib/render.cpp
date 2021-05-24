@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 23:10:30
+* @Last Modified time: 2021-05-23 19:12:02
 */
 
 #include <iostream>
@@ -54,10 +54,15 @@ void Render::updateView(sf::Vector2f transposition) {
 
 int Render::width() const
 {
-	return WIDTH;
+	return _bounds.width;
 }
 
 int Render::height() const
 {
-	return HEIGHT;
+	return _bounds.height;
+}
+
+sf::IntRect Render::bounds() const
+{
+	return _bounds;
 }

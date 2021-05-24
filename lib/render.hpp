@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-04-18 23:09:45
+* @Last Modified time: 2021-05-23 20:36:03
 */
 
 #pragma once
@@ -17,7 +17,7 @@ public:
 	bool W=0, A=0, S=0, D=0;
 	Render() = default;
 
-	Render(int WIDTH, int HEIGHT): WIDTH(WIDTH), HEIGHT(HEIGHT), _view(0, 0, WIDTH, HEIGHT)
+	Render(int WIDTH, int HEIGHT): _view(0, 0, WIDTH, HEIGHT), _bounds(0, 0, WIDTH, HEIGHT)
 	{
 		if (!_world.create(WIDTH, HEIGHT))
 		{
@@ -43,12 +43,13 @@ public:
 	int width() const;
 	int height() const;
 
+	sf::IntRect bounds() const;
+
 	sf::Sprite getDrawn() const;
 
 	std::vector<Hill> hills;
 	sf::RenderTexture _world;
 private:
-	int WIDTH;
-	int HEIGHT;
 	sf::FloatRect _view;
+	sf::IntRect _bounds;
 };
