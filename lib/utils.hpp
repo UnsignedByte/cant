@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 18:09:11
+* @Last Modified time: 2021-05-24 18:46:23
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -17,11 +17,13 @@ namespace utils
 	namespace rand
 	{
 		float rand_01();
+		float norm();
 
 		int urand(int min, int max);
 	}
 	namespace math
 	{
+		float sigmoid(float);
 
 		//Angle class with helper functions; contains a direction and a vector
 		struct Angle

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 18:09:27
+* @Last Modified time: 2021-05-24 19:02:24
 */
 #include <random>
 #include <cassert>
@@ -15,11 +15,17 @@ namespace utils
 	{
 		std::random_device rd;
 		std::mt19937 mt(rd());
-		std::uniform_real_distribution<float> dist(0.0, 1.0);
+		std::uniform_real_distribution<float> udist(0.0, 1.0);
+		std::normal_distribution<float> normdist(0.0, 1.0);
 
 		float rand_01()
 		{
-			return dist(mt);
+			return udist(mt);
+		}
+
+		float norm()
+		{
+			return normdist(mt);
 		}
 
 		int urand(int min, int max){
@@ -28,6 +34,11 @@ namespace utils
 	}
 	namespace math
 	{
+		float sigmoid(float x)
+		{
+			return 1/(1+std::exp(-x));
+		}
+
 		void Angle::operator +=(float a)
 		{
 			_angle+=a;
@@ -89,14 +100,6 @@ namespace utils
 		sf::Color rgb;
 		unsigned int h;
     unsigned char region, remainder, p, q, t, s, v;
-
-    if (s == 0)
-    {
-        rgb.r = v;
-        rgb.g = v;
-        rgb.b = v;
-        return rgb;
-    }
 
     s = 255; // always saturation max
     v = HSVec.x*HSVec.x+HSVec.y*HSVec.y; // x^2+y^2

@@ -2,11 +2,12 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 17:00:17
+* @Last Modified time: 2021-05-24 18:59:20
 */
 
 #pragma once
 #include "ant.hpp"
+#include "rtneat.hpp"
 #include <SFML/System.hpp>
 
 struct Render;
