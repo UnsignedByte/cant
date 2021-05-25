@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 08:19:45
+* @Last Modified time: 2021-05-25 12:32:58
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -12,7 +12,7 @@
 #include "render.hpp"
 #include "hill.hpp"
 
-const float ANT_SIZE = 3.f;
+const float ANT_SIZE = 1.5f;
 
 // const int DOT[] = {0, 0, 0, 1, 0, -1, -1, 0, 1, 0};
 
@@ -28,7 +28,7 @@ void Ant::tick()
 
 	_pos = arfmod(_pos, _render->world()->getSize());
 
-	_render->pheromone()[(int)_pos.y * _render->bounds().width + (int)_pos.x] += utils::math::Angle(_brain.output(1)).getVec();
+	_render->pheromone()[(int)_pos.y * _render->bounds().width + (int)_pos.x] += utils::math::polar2Cartesian(_brain.output(1));
 	// for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
 	// 	_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::Angle(_brain.output(1)).getVec();
 	// }

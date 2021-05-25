@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 08:41:56
+* @Last Modified time: 2021-05-25 12:17:47
 */
 
 #include <iostream>
@@ -10,6 +10,30 @@
 #include <SFML/OpenGL.hpp>
 
 const int NEIGHBORS[] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
+
+void DrawableImg::loadImg() {
+	//update image with new colors
+	for(int i = 0; i < _H; i++)
+	{
+		for (int j = 0; j < _W; j++)
+		{
+			_img.setPixel(j, i, utils::HS_vec_to_RGBA(data[i*_W+j]));
+			// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
+			// printf("test\n");
+		}
+	}
+}
+
+sf::Image& DrawableImg::img() {
+	return _img;
+}
+
+sf::Sprite& DrawableImg::sprite() {
+	loadImg();
+	_texture.loadFromImage(_img);
+	_sprite.setTexture(_texture, true);
+	return _sprite;
+}
 
 void Render::addHill(Hill h)
 {
@@ -21,26 +45,9 @@ void Render::render()
 {
 	_world.clear();
 
-
-	//update food image with new colors
-	for(int i = 0; i < _bounds.height; i++)
-	{
-		for (int j = 0; j < _bounds.width; j++)
-		{
-			_pheromoneImg.setPixel(j, i, utils::HS_vec_to_RGBA(_pheromone[i*_bounds.width+j]));
-			// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
-			// printf("test\n");
-		}
-	}
-
-
 	// printf("test\n");
 
-	_pheromoneTexture.loadFromImage(_pheromoneImg);
-	_pheromoneSprite.setTexture(_pheromoneTexture, true);
-	_pheromoneSprite.setPosition(0,0);
-
-	_world.draw(_pheromoneSprite);
+	_world.draw(_pheromone.sprite());
 
 	// printf("test\n");
 
@@ -52,14 +59,14 @@ void Render::render()
 
 void Render::tick() //tick all hills and conversely all ants
 {
-	std::swap(_pheromoneOld, _pheromone);
+	std::swap(_pheromone.dataOld, _pheromone.data);
 	for(int i = 0; i < _bounds.height; i++)
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
-			_pheromone[i*_bounds.width+j] = _pheromoneOld[i*_bounds.width+j]*0.998f;
+			_pheromone.data[i*_bounds.width+j] = _pheromone.dataOld[i*_bounds.width+j]*0.997f;
 			// for (int k = 0; k < 8; k++) {
-			// 	_pheromone[i*_bounds.width+j] += _pheromoneOld[arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(i+NEIGHBORS[2*k], _bounds.width)]*0.1f;
+			// 	_pheromone.data[i*_bounds.width+j] += _pheromone.dataOld[arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(i+NEIGHBORS[2*k], _bounds.width)]*0.1f;
 			// }
 		}
 	}
@@ -131,5 +138,5 @@ sf::RenderTexture* Render::world()
 
 std::vector<sf::Vector2f>& Render::pheromone()
 {
-	return _pheromone;
+	return _pheromone.data;
 }

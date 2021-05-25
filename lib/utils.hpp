@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 00:55:36
+* @Last Modified time: 2021-05-25 12:34:55
 */
 #pragma once
 
@@ -32,7 +32,7 @@ namespace utils {
 		 * Angle class with helper functions; contains a float direction and a computable unit vector
 		 */
 		struct Angle {
-			public:
+		public:
 			Angle() = default;
 
 			Angle(float angle) {
@@ -59,9 +59,12 @@ namespace utils {
 			[[nodiscard]]
 			sf::Vector2f getVec() const;
 
-			private:
+		private:
 			float _angle;
 		};
+
+		sf::Vector2f polar2Cartesian(const float);
+		sf::Vector2f polar2Cartesian(const float, const float);
 	}
 
 	/**

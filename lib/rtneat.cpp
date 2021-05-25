@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 08:25:09
+* @Last Modified time: 2021-05-25 12:33:14
 */
 
 #include "rtneat.hpp"
@@ -63,11 +63,13 @@ float Network::output(int i) const
 float Network::parseArg(int i, Ant* a) const
 {
 	switch(_argparams[i].type) {
-		case 0: // Return a random number
-			return utils::rand::rand_01();
-		case 1: // PHERMONE INTENSITY (squared) at offset
-		case 2: // PHERMONE Activation by color
-			sf::Vector2f offsetPos = a->getPos()+utils::math::Angle(a->getAngle()+_argparams[i].offsetDir).getVec();
+		case 0: // return a defined constant
+			return _argparams[i].offsetDir;
+		case 1: // Return a random number from (-1,1)
+			return utils::rand::rand_01()*2-1;
+		case 2: // PHERMONE INTENSITY (squared) at offset
+		case 3: // PHERMONE Activation by color
+			sf::Vector2f offsetPos = a->getPos()+utils::math::polar2Cartesian(a->getAngle().getAngle()+_argparams[i].offsetDir, _argparams[i].offsetMag);
 			sf::IntRect bounds = a->render()->bounds();
 
 			//Color vector at point

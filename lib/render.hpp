@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 08:32:08
+* @Last Modified time: 2021-05-25 12:17:43
 */
 
 #pragma once
@@ -10,6 +10,30 @@
 #include "hill.hpp"
 #include <stdexcept>
 #include <SFML/OpenGL.hpp>
+
+struct DrawableImg {
+	DrawableImg() = default;
+
+	DrawableImg(int WIDTH, int HEIGHT): _W(WIDTH), _H(HEIGHT) {
+		_img.create(_W, _H);
+		_texture.create(_W, _H);
+		data.resize(WIDTH*HEIGHT);
+		dataOld.resize(WIDTH*HEIGHT);
+	}
+
+	void loadImg();
+
+	sf::Image& img();
+	sf::Sprite& sprite();
+
+	std::vector<sf::Vector2f> data;
+	std::vector<sf::Vector2f> dataOld;
+private:
+	int _W, _H;
+	sf::Sprite _sprite;
+	sf::Texture _texture;
+	sf::Image _img;
+};
 
 struct Render
 {
@@ -27,10 +51,8 @@ public:
 		_world.setRepeated(true);
 
 		// create empty pheromone image
-		_pheromoneOld.resize(WIDTH*HEIGHT);
-		_pheromone.resize(WIDTH*HEIGHT);
-		_pheromoneImg.create(WIDTH, HEIGHT);
-		_pheromoneTexture.create(WIDTH, HEIGHT);
+		_pheromone = DrawableImg(WIDTH, HEIGHT);
+		_food = DrawableImg(WIDTH, HEIGHT);
 
 		// sf::Texture::bind(&_world.getTexture());
 
@@ -64,11 +86,8 @@ public:
 private:
 	sf::FloatRect _view;
 	sf::IntRect _bounds;
-	sf::Image _pheromoneImg;
-	sf::Texture _pheromoneTexture;
-	sf::Sprite _pheromoneSprite;
-	std::vector<sf::Vector2f> _pheromone;
-	std::vector<sf::Vector2f> _pheromoneOld;
+	DrawableImg _pheromone;
+	DrawableImg _food;
 	sf::RenderTexture _world;
 	int _E;
 };

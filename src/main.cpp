@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 08:42:28
+* @Last Modified time: 2021-05-25 12:03:53
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -15,8 +15,8 @@
 #include "render.hpp"
 #include "hill.hpp"
 
-const int WIDTH = 800;
-const int HEIGHT = 600;
+const int WIDTH = 1000;
+const int HEIGHT = 800;
 const sf::Time frameTime = sf::seconds(1.f/60.f);
 
 int main()

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 23:27:39
+* @Last Modified time: 2021-05-25 12:36:30
 */
 #include "hill.hpp"
 #include "render.hpp"
@@ -43,7 +43,7 @@ void Hill::render() const
 	ants.resize(C*3);
 	_render->world()->draw(ants);
 	sf::CircleShape hill(HILL_SIZE);
-	hill.setPosition(_pos-sf::Vector2f(HILL_SIZE/2, HILL_SIZE/2));
+	hill.setPosition(_pos-sf::Vector2f(HILL_SIZE, HILL_SIZE));
 	hill.setFillColor(sf::Color(148, 102, 28, 255));
 	_render->world()->draw(hill);
 }

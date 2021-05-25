@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 00:55:07
+* @Last Modified time: 2021-05-25 12:32:15
 */
 #include <random>
 #include <cassert>
@@ -69,6 +69,14 @@ namespace utils {
 		sf::Vector2f Angle::getVec() const {
 			return {std::cos(_angle), std::sin(_angle)};
 		}
+
+		sf::Vector2f polar2Cartesian(const float dir) {
+			return {std::cos(dir), std::sin(dir)};
+		}
+
+		sf::Vector2f polar2Cartesian(const float dir, const float mag) {
+			return polar2Cartesian(dir)*mag;
+		}
 	}
 
 	// Credit to https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
@@ -81,9 +89,10 @@ namespace utils {
 
 		// Always use the max saturation value
 		s = 255;
+		v = 255;
 
 		// Take magnitude of vector (between 0 and inf) and map it into the range [0, 255]
-		v = static_cast<uint8_t>(255. * (1 - std::exp(-0.1 * (hs_vec.x * hs_vec.x + hs_vec.y * hs_vec.y))));
+		rgba.a = static_cast<uint8_t>(255. * (1 - std::exp(-0.1 * (hs_vec.x * hs_vec.x + hs_vec.y * hs_vec.y))));
 
 		// Find the hue, region and remainder
 		h = static_cast<unsigned int>(std::atan2(hs_vec.y, hs_vec.x) * 128. / M_PI);
@@ -126,8 +135,6 @@ namespace utils {
 				rgba.b = q;
 				break;
 		}
-
-		rgba.a = 255;
 		return rgba;
 	}
 }

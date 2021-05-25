@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 08:22:37
+* @Last Modified time: 2021-05-25 12:13:14
 */
 
 #pragma once
@@ -63,14 +63,18 @@ public:
 		while (utils::rand::rand_01() < ADD_INPUT_CHANCE) {
 			n._inputs.push_back(Node());
 			n._argparams.push_back(ArgParams());
-			n._argparams.back().type = utils::rand::urand(0,3);
+			n._argparams.back().type = utils::rand::urand(0,4);
 			switch(n._argparams.back().type) {
 				case 0:
+					n._argparams.back().offsetDir = utils::rand::norm();
+					printf("Creating constant parameter with value %f\n", n._argparams.back().offsetDir);
+					break;
+				case 1:
 					printf("Creating random parameter\n");
 					break;
-				case 2:
+				case 3:
 					n._argparams.back().matchDir = utils::rand::rand_01()*M_PI*2;
-				case 1:
+				case 2:
 					n._argparams.back().offsetDir = utils::rand::rand_01()*M_PI*2-M_PI;
 					n._argparams.back().offsetMag = utils::rand::norm();
 					printf("Creating parameter type %d with offset (%f, %f) and match %f\n", n._argparams.back().type, n._argparams.back().offsetDir, n._argparams.back().offsetMag, n._argparams.back().matchDir);
