@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-23 22:30:05
+* @Last Modified time: 2021-05-24 18:09:11
 */
 #pragma once
 #include <SFML/Graphics.hpp>
@@ -54,9 +54,11 @@ namespace utils
 			void updateVec();
 		};
 	}
+
+	sf::Color HSVec2RGB(const sf::Vector2f&);
 }
 
-std::ostream& operator<<(std::ostream&, const sf::Vector2f);
+std::ostream& operator<<(std::ostream&, const sf::Vector2f&);
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const sf::Rect<T> v)
@@ -65,6 +67,7 @@ std::ostream& operator<<(std::ostream& os, const sf::Rect<T> v)
 	return os;
 }
 
+int arimod(const int, const int);
 float arfmod(const float, const float);
 
 template <typename A, typename B>

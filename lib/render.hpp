@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 14:50:24
+* @Last Modified time: 2021-05-24 17:47:56
 */
 
 #pragma once
@@ -26,6 +26,11 @@ public:
 
 		_world.setRepeated(true);
 
+		// create empty food image
+		_food.resize(WIDTH*HEIGHT);
+		_foodImg.create(WIDTH, HEIGHT);
+		_foodTexture.create(WIDTH, HEIGHT);
+
 		// sf::Texture::bind(&_world.getTexture());
 
 		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -36,7 +41,7 @@ public:
 
 	void tick();
 
-	void renderHills();
+	void render();
 
 	void updateView(sf::Vector2f);
 
@@ -46,15 +51,22 @@ public:
 	int height() const;
 
 	int E() const;
+	std::vector<sf::Vector2f>& food();
 
 	sf::IntRect bounds() const;
 
 	sf::Sprite getDrawn() const;
 
+	sf::RenderTexture* world();
+
 	std::vector<Hill> hills;
-	sf::RenderTexture _world;
 private:
 	sf::FloatRect _view;
 	sf::IntRect _bounds;
+	sf::Image _foodImg;
+	sf::Texture _foodTexture;
+	sf::Sprite _foodSprite;
+	std::vector<sf::Vector2f> _food;
+	sf::RenderTexture _world;
 	int _E;
 };
