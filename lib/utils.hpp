@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 20:59:35
+* @Last Modified time: 2021-05-25 00:55:36
 */
 #pragma once
 
@@ -35,7 +35,9 @@ namespace utils {
 			public:
 			Angle() = default;
 
-			Angle(float angle) : _angle(angle) {};
+			Angle(float angle) {
+				setAngle(angle);
+			}
 
 			void setAngle(float angle);
 

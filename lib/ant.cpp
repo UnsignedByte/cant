@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 18:14:43
+* @Last Modified time: 2021-05-25 01:01:19
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -10,6 +10,7 @@
 #include "utils.hpp"
 #include <cmath>
 #include "render.hpp"
+#include "hill.hpp"
 
 const float ANT_SIZE = 3.f;
 
@@ -18,7 +19,9 @@ const int DOT[] = {0, 0, 0, 1, 0, -1, -1, 0, 1, 0};
 // returns TRUE if ant has died
 void Ant::tick()
 {
-	_dir+=(utils::rand::rand_01()-0.5f)/2.f;
+	// _dir+=(utils::rand::rand_01()-0.5f)/2.f;
+	_brain.tick(this);
+	_dir+=_brain.output(0);
 	_pos+=_dir.getVec();
 
 	// std::cout << _render << std::endl;
@@ -26,7 +29,7 @@ void Ant::tick()
 	_pos = arfmod(_pos, _render->world()->getSize());
 
 	for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
-		_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += _dir.getVec();
+		_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::Angle(_brain.output(1)).getVec();
 	}
 	
 	// sf::Color test = utils::HSVec2RGB(_dir.getVec());
@@ -78,4 +81,9 @@ utils::math::Angle Ant::getAngle() const
 int Ant::E() const
 {
 	return _E;
+}
+
+Render* Ant::render()
+{
+	return _render;
 }

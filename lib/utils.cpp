@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 21:02:45
+* @Last Modified time: 2021-05-25 00:55:07
 */
 #include <random>
 #include <cassert>
@@ -35,11 +35,11 @@ namespace utils {
 		}
 
 		void Angle::operator+=(float a) {
-			_angle += a;
+			setAngle(_angle + a);
 		}
 
 		void Angle::operator+=(Angle a) {
-			_angle += a.getAngle();
+			setAngle(_angle + a.getAngle());
 		}
 
 		Angle Angle::operator+(float a) const {
@@ -59,7 +59,7 @@ namespace utils {
 		}
 
 		void Angle::setAngle(float angle) {
-			_angle = angle;
+			_angle = arfmod(angle, (float)M_PI*2);
 		}
 
 		float Angle::getAngle() const {
