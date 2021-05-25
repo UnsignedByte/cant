@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 00:59:59
+* @Last Modified time: 2021-05-25 08:22:37
 */
 
 #pragma once
@@ -57,6 +57,7 @@ public:
 
 	static Network random()
 	{
+		printf("\nCREATING RANDOM BRAIN\n");
 		Network n(0, 2, std::vector<Node>());
 
 		while (utils::rand::rand_01() < ADD_INPUT_CHANCE) {
@@ -82,7 +83,7 @@ public:
 			n._nodes.back().bias = utils::rand::norm();
 		}
 
-		printf("Brain has %ld inputs and %d nodes", n._inputs.size(), n._N);
+		printf("Brain has %ld inputs and %d nodes\n", n._inputs.size(), n._N);
 
 		for(int i = 0; i < n._inputs.size(); i++) {
 			while (utils::rand::rand_01() < ADD_CHILD_CHANCE) {

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 18:14:38
+* @Last Modified time: 2021-05-25 08:32:08
 */
 
 #pragma once
@@ -27,6 +27,7 @@ public:
 		_world.setRepeated(true);
 
 		// create empty pheromone image
+		_pheromoneOld.resize(WIDTH*HEIGHT);
 		_pheromone.resize(WIDTH*HEIGHT);
 		_pheromoneImg.create(WIDTH, HEIGHT);
 		_pheromoneTexture.create(WIDTH, HEIGHT);
@@ -67,6 +68,7 @@ private:
 	sf::Texture _pheromoneTexture;
 	sf::Sprite _pheromoneSprite;
 	std::vector<sf::Vector2f> _pheromone;
+	std::vector<sf::Vector2f> _pheromoneOld;
 	sf::RenderTexture _world;
 	int _E;
 };

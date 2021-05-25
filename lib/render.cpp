@@ -2,12 +2,14 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 21:02:24
+* @Last Modified time: 2021-05-25 08:41:56
 */
 
 #include <iostream>
 #include "render.hpp"
 #include <SFML/OpenGL.hpp>
+
+const int NEIGHBORS[] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
 
 void Render::addHill(Hill h)
 {
@@ -50,11 +52,15 @@ void Render::render()
 
 void Render::tick() //tick all hills and conversely all ants
 {
+	std::swap(_pheromoneOld, _pheromone);
 	for(int i = 0; i < _bounds.height; i++)
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
-			_pheromone[i*_bounds.width+j]*=0.998f;
+			_pheromone[i*_bounds.width+j] = _pheromoneOld[i*_bounds.width+j]*0.998f;
+			// for (int k = 0; k < 8; k++) {
+			// 	_pheromone[i*_bounds.width+j] += _pheromoneOld[arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(i+NEIGHBORS[2*k], _bounds.width)]*0.1f;
+			// }
 		}
 	}
 

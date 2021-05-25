@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 00:26:28
+* @Last Modified time: 2021-05-25 08:25:09
 */
 
 #include "rtneat.hpp"
@@ -75,7 +75,7 @@ float Network::parseArg(int i, Ant* a) const
 			if (_argparams[i].type == 1)
 				return col.x*col.x+col.y*col.y;
 			else {
-				// circular radian difference between two angles, normalized to (0,1).
+				// circular radian difference between two angles, normalized to (-1,1).
 				float d = arfmod(d-_argparams[i].matchDir, M_PI*2);
 				d = 1-std::min(d, (float)M_PI*2-d)/M_PI;
 				// square to emphasize values near 1
