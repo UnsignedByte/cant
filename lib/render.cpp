@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 18:05:08
+* @Last Modified time: 2021-05-24 18:20:00
 */
 
 #include <iostream>
@@ -25,8 +25,8 @@ void Render::render()
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
-			_foodImg.setPixel(j, i, utils::HSVec2RGB(_food[i*_bounds.width+j]));
-			// _foodImg.setPixel(j, i, sf::Color(255,0,0));
+			_pheromoneImg.setPixel(j, i, utils::HSVec2RGB(_pheromone[i*_bounds.width+j]));
+			// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
 			// printf("test\n");
 		}
 	}
@@ -34,11 +34,11 @@ void Render::render()
 
 	// printf("test\n");
 
-	_foodTexture.loadFromImage(_foodImg);
-	_foodSprite.setTexture(_foodTexture, true);
-	_foodSprite.setPosition(0,0);
+	_pheromoneTexture.loadFromImage(_pheromoneImg);
+	_pheromoneSprite.setTexture(_pheromoneTexture, true);
+	_pheromoneSprite.setPosition(0,0);
 
-	_world.draw(_foodSprite);
+	_world.draw(_pheromoneSprite);
 
 	// printf("test\n");
 
@@ -54,7 +54,7 @@ void Render::tick() //tick all hills and conversely all ants
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
-			_food[i*_bounds.width+j]*=0.998f;
+			_pheromone[i*_bounds.width+j]*=0.998f;
 		}
 	}
 
@@ -123,8 +123,7 @@ sf::RenderTexture* Render::world()
 	return &_world;
 }
 
-
-std::vector<sf::Vector2f>& Render::food()
+std::vector<sf::Vector2f>& Render::pheromone()
 {
-	return _food;
+	return _pheromone;
 }

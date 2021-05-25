@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 17:47:56
+* @Last Modified time: 2021-05-24 18:14:38
 */
 
 #pragma once
@@ -26,10 +26,10 @@ public:
 
 		_world.setRepeated(true);
 
-		// create empty food image
-		_food.resize(WIDTH*HEIGHT);
-		_foodImg.create(WIDTH, HEIGHT);
-		_foodTexture.create(WIDTH, HEIGHT);
+		// create empty pheromone image
+		_pheromone.resize(WIDTH*HEIGHT);
+		_pheromoneImg.create(WIDTH, HEIGHT);
+		_pheromoneTexture.create(WIDTH, HEIGHT);
 
 		// sf::Texture::bind(&_world.getTexture());
 
@@ -51,7 +51,7 @@ public:
 	int height() const;
 
 	int E() const;
-	std::vector<sf::Vector2f>& food();
+	std::vector<sf::Vector2f>& pheromone();
 
 	sf::IntRect bounds() const;
 
@@ -63,10 +63,10 @@ public:
 private:
 	sf::FloatRect _view;
 	sf::IntRect _bounds;
-	sf::Image _foodImg;
-	sf::Texture _foodTexture;
-	sf::Sprite _foodSprite;
-	std::vector<sf::Vector2f> _food;
+	sf::Image _pheromoneImg;
+	sf::Texture _pheromoneTexture;
+	sf::Sprite _pheromoneSprite;
+	std::vector<sf::Vector2f> _pheromone;
 	sf::RenderTexture _world;
 	int _E;
 };

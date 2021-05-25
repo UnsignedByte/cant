@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 18:11:22
+* @Last Modified time: 2021-05-24 18:14:43
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -26,7 +26,7 @@ void Ant::tick()
 	_pos = arfmod(_pos, _render->world()->getSize());
 
 	for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
-		_render->food()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += _dir.getVec();
+		_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += _dir.getVec();
 	}
 	
 	// sf::Color test = utils::HSVec2RGB(_dir.getVec());
