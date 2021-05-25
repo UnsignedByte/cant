@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-24 18:20:00
+* @Last Modified time: 2021-05-24 21:02:24
 */
 
 #include <iostream>
@@ -25,7 +25,7 @@ void Render::render()
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
-			_pheromoneImg.setPixel(j, i, utils::HSVec2RGB(_pheromone[i*_bounds.width+j]));
+			_pheromoneImg.setPixel(j, i, utils::HS_vec_to_RGBA(_pheromone[i*_bounds.width+j]));
 			// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
 			// printf("test\n");
 		}

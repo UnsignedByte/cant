@@ -8,7 +8,7 @@ EXE := $(BIN_DIR)/exe
 LIB := $(wildcard $(LIB_DIR)/*.cpp)
 OBJ := $(patsubst $(LIB_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(LIB)) # Convert .cpp files to .o
 
-CXXFLAGS := -MMD -MP -Ilib
+CXXFLAGS := -MMD -MP -Ilib -g
 LDLIBS := -std=c++17 -lsfml-graphics -lsfml-window -lsfml-system -lGL
 
 .PHONY: build dev clean
