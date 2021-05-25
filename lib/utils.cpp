@@ -9,148 +9,130 @@
 #include <SFML/System.hpp>
 #include "utils.hpp"
 
-namespace utils
-{
-	namespace rand
-	{
-		std::random_device rd;
-		std::mt19937 mt(rd());
-		std::uniform_real_distribution<float> dist(0.0, 1.0);
+namespace utils {
+	namespace rand {
+		std::random_device random_device;
+		std::mt19937 random_engine(random_device());
+		std::uniform_real_distribution<float> random_distribution(0.0, 1.0);
 
-		float rand_01()
-		{
-			return dist(mt);
+		float rand_01() {
+			return random_distribution(random_engine);
 		}
 
-		int urand(int min, int max){
-			return static_cast<int>(utils::rand::rand_01()*(max-min)+min);
+		int urand(int min, int max) {
+			return static_cast<int>(utils::rand::rand_01() * (max - min) + min);
 		}
 	}
-	namespace math
-	{
-		void Angle::operator +=(float a)
-		{
-			_angle+=a;
-			updateVec();
+
+	namespace math {
+		void Angle::operator+=(float a) {
+			_angle += a;
 		}
 
-		void Angle::operator +=(Angle a)
-		{
-			_angle+=a.getAngle();
-			updateVec();
+		void Angle::operator+=(Angle a) {
+			_angle += a.getAngle();
 		}
 
-		Angle Angle::operator +(float a) const
-		{
-			return Angle(a+_angle);
+		Angle Angle::operator+(float a) const {
+			return Angle(a + _angle);
 		}
 
-		Angle Angle::operator +(Angle a) const
-		{
-			return Angle(a.getAngle()+_angle);
+		Angle Angle::operator+(Angle a) const {
+			return Angle(a.getAngle() + _angle);
 		}
 
-		Angle Angle::operator -(float a) const
-		{
-			return Angle(_angle-a);
+		Angle Angle::operator-(float a) const {
+			return Angle(_angle - a);
 		}
 
-		Angle Angle::operator -(Angle a) const
-		{
-			return Angle(_angle-a.getAngle());
+		Angle Angle::operator-(Angle a) const {
+			return Angle(_angle - a.getAngle());
 		}
 
-		void Angle::setAngle(float angle)
-		{
+		void Angle::setAngle(float angle) {
 			_angle = angle;
-			updateVec();
 		}
 
-		float Angle::getAngle() const
-		{
+		float Angle::getAngle() const {
 			return _angle;
 		}
 
-		sf::Vector2f Angle::getVec() const
-		{
-			return _vec;
-		}
-		
-		void Angle::updateVec()
-		{
-			_vec.x = std::cos(_angle);
-			_vec.y = std::sin(_angle);
+		sf::Vector2f Angle::getVec() const {
+			return {std::cos(_angle), std::sin(_angle)};
 		}
 	}
 
-	// https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
-	sf::Color HSVec2RGB(const sf::Vector2f& HSVec)
-	{
-		sf::Color rgb;
+	// Credit to https://stackoverflow.com/questions/3018313/algorithm-to-convert-rgb-to-hsv-and-hsv-to-rgb-in-range-0-255-for-both
+	sf::Color HS_vec_to_RGBA(sf::Vector2f hs_vec) {
+		sf::Color rgba;
+
 		unsigned int h;
-    unsigned char region, remainder, p, q, t, s, v;
+		uint8_t region, remainder, p, q, t, s, v;
 
-    if (s == 0)
-    {
-        rgb.r = v;
-        rgb.g = v;
-        rgb.b = v;
-        return rgb;
-    }
+		// Always use the max saturation value
+		s = 255;
 
-    s = 255; // always saturation max
-    v = HSVec.x*HSVec.x+HSVec.y*HSVec.y; // x^2+y^2
-    v = 255*(1-std::exp(-0.1*v));
+		// Take magnitude of vector (between 0 and inf) and map it into the range [0, 255]
+		v = static_cast<uint8_t>(255. * (1 - std::exp(-0.1 * (hs_vec.x * hs_vec.x + hs_vec.y * hs_vec.y))));
 
-    h = std::atan2(HSVec.y, HSVec.x) * 128 / M_PI;
-    region = h / 43;
-    remainder = (h - (region * 43)) * 6; 
+		// Find the hue, region and remainder
+		h = static_cast<unsigned int>(std::atan2(hs_vec.y, hs_vec.x) * 128. / M_PI);
+		region = h / 43;
+		remainder = (h - (region * 43)) * 6;
 
-    p = (v * (255 - s)) >> 8;
-    q = (v * (255 - ((s * remainder) >> 8))) >> 8;
-    t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
+		p = (v * (255 - s)) >> 8;
+		q = (v * (255 - ((s * remainder) >> 8))) >> 8;
+		t = (v * (255 - ((s * (255 - remainder)) >> 8))) >> 8;
 
-    switch (region)
-    {
-        case 0:
-            rgb.r = v; rgb.g = t; rgb.b = p;
-            break;
-        case 1:
-            rgb.r = q; rgb.g = v; rgb.b = p;
-            break;
-        case 2:
-            rgb.r = p; rgb.g = v; rgb.b = t;
-            break;
-        case 3:
-            rgb.r = p; rgb.g = q; rgb.b = v;
-            break;
-        case 4:
-            rgb.r = t; rgb.g = p; rgb.b = v;
-            break;
-        default:
-            rgb.r = v; rgb.g = p; rgb.b = q;
-            break;
-    }
+		switch (region) {
+			case 0:
+				rgba.r = v;
+				rgba.g = t;
+				rgba.b = p;
+				break;
+			case 1:
+				rgba.r = q;
+				rgba.g = v;
+				rgba.b = p;
+				break;
+			case 2:
+				rgba.r = p;
+				rgba.g = v;
+				rgba.b = t;
+				break;
+			case 3:
+				rgba.r = p;
+				rgba.g = q;
+				rgba.b = v;
+				break;
+			case 4:
+				rgba.r = t;
+				rgba.g = p;
+				rgba.b = v;
+				break;
+			default:
+				rgba.r = v;
+				rgba.g = p;
+				rgba.b = q;
+				break;
+		}
 
-    // printf("%d, %d, %d\n", rgb.r, rgb.g, rgb.b);
-    return rgb;
+		rgba.a = 255;
+		return rgba;
 	}
 }
 
-std::ostream& operator<<(std::ostream& os, const sf::Vector2f& v)
-{
-	os << "("<<v.x<<", "<<v.y<<")";
+std::ostream &operator<<(std::ostream &os, const sf::Vector2f &v) {
+	os << "(" << v.x << ", " << v.y << ")";
 	return os;
 }
 
-float arfmod(const float a, const float b)
-{
+float arfmod(float a, float b) {
 	assert(b != 0);
-	return std::fmod(std::fmod(a,b)+b, b);
+	return std::fmod(std::fmod(a, b) + b, b);
 }
 
-int arimod(const int a, const int b)
-{
+int arimod(int a, int b) {
 	assert(b != 0);
-	return std::fmod(std::fmod(a,b)+b, b);
+	return std::fmod(std::fmod(a, b) + b, b);
 }
