@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 12:32:58
+* @Last Modified time: 2021-05-25 15:33:18
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -21,7 +21,7 @@ void Ant::tick()
 {
 	// _dir+=(utils::rand::rand_01()-0.5f)/2.f;
 	_brain.tick(this);
-	_dir+=utils::math::sigmoid(_brain.output(0));
+	_dir+=std::tanh(_brain.output(0))*0.5;
 	_pos+=_dir.getVec();
 
 	// std::cout << _render << std::endl;

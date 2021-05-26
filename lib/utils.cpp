@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 12:32:15
+* @Last Modified time: 2021-05-25 22:09:20
 */
 #include <random>
 #include <cassert>
@@ -13,7 +13,12 @@
 namespace utils {
 	namespace rand {
 		std::random_device random_device;
-		std::mt19937 random_engine(random_device());
+
+		// seed with 0 (for testing)
+		// std::seed_seq seed{0};
+
+		std::seed_seq seed{random_device()};
+		std::mt19937 random_engine(seed);
 		std::uniform_real_distribution<float> random_distribution(0.0, 1.0);
 		std::normal_distribution<float> normdist(0.0, 1.0);
 
@@ -23,6 +28,14 @@ namespace utils {
 
 		float norm() {
 			return normdist(random_engine);
+		}
+
+		int binom(int max, float chance) {
+			int r = 0;
+			for (int i = 0; i < max; i++) {
+				r += rand_01() < chance;
+			}
+			return r;
 		}
 
 		int urand(int min, int max) {

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 12:17:47
+* @Last Modified time: 2021-05-25 21:03:09
 */
 
 #include <iostream>
@@ -41,6 +41,15 @@ void Render::addHill(Hill h)
 	hills.push_back(h);
 }
 
+void Render::populateRandom(int mincount, int maxcount, int antmin, int antmax)
+{
+	int count = utils::rand::urand(mincount, maxcount);
+
+	for (int i = 0; i < count; i++) {
+		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, antmin, antmax, _TE/2/count, this));
+	}
+}
+
 void Render::render()
 {
 	_world.clear();
@@ -64,7 +73,7 @@ void Render::tick() //tick all hills and conversely all ants
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
-			_pheromone.data[i*_bounds.width+j] = _pheromone.dataOld[i*_bounds.width+j]*0.997f;
+			_pheromone.data[i*_bounds.width+j] = _pheromone.dataOld[i*_bounds.width+j]*0.995f;
 			// for (int k = 0; k < 8; k++) {
 			// 	_pheromone.data[i*_bounds.width+j] += _pheromone.dataOld[arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(i+NEIGHBORS[2*k], _bounds.width)]*0.1f;
 			// }

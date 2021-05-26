@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 12:34:55
+* @Last Modified time: 2021-05-25 21:34:32
 */
 #pragma once
 
@@ -19,6 +19,7 @@ namespace utils {
 		 */
 		float rand_01();
 		float norm();
+		int binom(int, float);
 
 		/**
 		 * Return a random integer in the range [min, max)
@@ -99,4 +100,13 @@ sf::Vector2f arfmod(const sf::Vector2<A> &a, const sf::Vector2<B> &b) {
 	sf::Vector2f j = sf::Vector2f(a);
 	sf::Vector2f k = sf::Vector2f(b);
 	return sf::Vector2f(arfmod(j.x, k.x), arfmod(j.y, k.y));
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, std::vector<T> matrix)
+{
+	for(int i = 0; i < matrix.size(); i++){
+		os << matrix[i] << " ";
+	}
+	return os << '\b';
 }

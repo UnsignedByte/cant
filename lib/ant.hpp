@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:20:16
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 00:05:38
+* @Last Modified time: 2021-05-25 21:56:57
 */
 #pragma once
 #include <iostream>
@@ -24,6 +24,7 @@ public:
 
 	Ant(float x, float y, float dir,  int E, Network brain, Render* rt, Hill* hill): _pos(x,y), _dir(utils::math::Angle(dir)), _brain(brain), _render(rt), _E(E), _hill(hill)
 	{
+		// std::cout << brain << std::endl;
 	}
 
 	// ant with random angle

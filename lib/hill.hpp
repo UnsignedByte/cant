@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 00:49:23
+* @Last Modified time: 2021-05-25 19:07:31
 */
 
 #pragma once
@@ -21,7 +21,7 @@ public:
 		int AllocatedE = _E/antCount;
 		for (int i = 0; i < antCount; i++)
 		{
-			_ants.push_back(Ant(_pos, AllocatedE, _brain, _render, this));
+			_ants.push_back(Ant(_pos, AllocatedE, Network::mutate(_brain), _render, this));
 			_E -= _ants[i].E();
 		}
 	}
@@ -31,9 +31,9 @@ public:
 		return Hill(utils::rand::rand_01()*boundX, utils::rand::rand_01()*boundY, a, e, rt, Network::random());
 	}
 
-	static Hill randomHill(int boundX, int boundY, int amin, int amax, int emin, int emax, Render* rt)
+	static Hill randomHill(int boundX, int boundY, int amin, int amax, int e, Render* rt)
 	{
-		return randomHill(boundX, boundY, utils::rand::urand(amin, amax), utils::rand::urand(emin, emax), rt);
+		return randomHill(boundX, boundY, utils::rand::urand(amin, amax), e, rt);
 	}
 
 	void tick();

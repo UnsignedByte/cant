@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 12:17:43
+* @Last Modified time: 2021-05-25 15:26:43
 */
 
 #pragma once
@@ -41,7 +41,7 @@ public:
 	bool W=0, A=0, S=0, D=0;
 	Render() = default;
 
-	Render(int WIDTH, int HEIGHT): _view(0, 0, WIDTH, HEIGHT), _bounds(0, 0, WIDTH, HEIGHT)
+	Render(int WIDTH, int HEIGHT, int E): _view(0, 0, WIDTH, HEIGHT), _bounds(0, 0, WIDTH, HEIGHT), _TE(E)
 	{
 		if (!_world.create(WIDTH, HEIGHT))
 		{
@@ -61,6 +61,8 @@ public:
 	}
 
 	void addHill(Hill);
+
+	void populateRandom(int, int, int, int);
 
 	void tick();
 
@@ -85,9 +87,10 @@ public:
 	std::vector<Hill> hills;
 private:
 	sf::FloatRect _view;
-	sf::IntRect _bounds;
+	const sf::IntRect _bounds;
 	DrawableImg _pheromone;
 	DrawableImg _food;
 	sf::RenderTexture _world;
 	int _E;
+	const int _TE;
 };

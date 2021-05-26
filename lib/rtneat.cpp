@@ -2,19 +2,69 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 12:33:14
+* @Last Modified time: 2021-05-25 22:07:52
 */
 
+#include <stdexcept>
 #include "rtneat.hpp"
 #include "utils.hpp"
 #include "ant.hpp"
 #include "render.hpp"
 
+namespace nUtils {
+	void RANDOM_MUTATE(float& f) {
+		if (utils::rand::rand_01() < MUTATE_VALUE) {
+			if (utils::rand::rand_01() < MUTATE_RESET)
+				f = utils::rand::norm();
+
+			f *= (std::tanh(utils::rand::norm())/10+1);
+		}
+	}
+
+	ArgParams RANDOM_PARAMS() {
+		ArgParams p;
+		p.type = utils::rand::urand(0,4);
+		switch(p.type) {
+			case 0:
+				p.offsetDir = utils::rand::norm();
+				printf("Creating constant parameter with value %f\n", p.offsetDir);
+				break;
+			case 1:
+				printf("Creating random parameter\n");
+				break;
+			case 3:
+				p.matchDir = utils::rand::rand_01()*M_PI*2;
+			case 2:
+				p.offsetDir = utils::rand::rand_01()*M_PI*2-M_PI;
+				p.offsetMag = utils::rand::norm();
+				printf("Creating parameter type %d with offset (%f, %f) and match %f\n", p.type, p.offsetDir, p.offsetMag, p.matchDir);
+				break;
+		}
+		return p;
+	}
+
+	Node RANDOM_NODE(int N) {
+		Node n;
+
+		n.bias = utils::rand::norm();
+
+		if (n.children.size() > 0) {
+			printf("SIZESIZESIZE: %ld\n", n.children.size());
+		}
+
+		do {
+			n.children.push_back(utils::rand::urand(0,N));
+			n.weights.push_back(utils::rand::norm());
+		} while (utils::rand::rand_01() < INITIAL_CHILD_CHANCE);
+		return n;
+	}
+}
+
 void Network::propogate()
 {
-	for(int i = 0; i < _N; i++)
+	for(int i = _ocount; i < _nodes.size(); i++)
 	{
-		_states[i] = utils::math::sigmoid(_nodes[i].state);
+		_states[i] = std::tanh(_nodes[i].state);
 	}
 
 	for(int i = 0; i < _nodes.size(); i++) {
@@ -26,15 +76,22 @@ void Network::propogate()
 	{
 		for (int j = 0; j < _inputs[i].children.size(); j++)
 		{
+			// printf("%d, %d, %d\n", _inputs[i].children[j], i, j);
 			_nodes[_inputs[i].children[j]].state += _inputs[i].state*_inputs[i].weights[j] + _inputs[i].bias;
 			// printf("Propogating input to child %d with state %f\n", C,  _nodes[C].state);
 		}
 	}
 
-	for(int i = 0; i < _N; i++)
+	for(int i = _ocount; i < _nodes.size(); i++)
 	{
 		for (int j = 0; j < _nodes[i].children.size(); j++)
 		{
+			// if (_nodes[i].children[j] > _nodes.size()) {
+			// 	std::cout << *this << std::endl;
+			// 	std::cout << _nodes[i].children << std::endl;
+			// 	printf("%d, %d, %d\n", _nodes[i].children[j], i, j);
+			// 	throw std::runtime_error("Fucked");
+			// }
 			_nodes[_nodes[i].children[j]].state += _states[i]*_nodes[i].weights[j] + _nodes[i].bias;
 			// printf("Propogating to child %d with state %f\n", C, _states[i] + _nodes[C].state);
 		}
@@ -57,7 +114,7 @@ void Network::tick(Ant* a)
 
 float Network::output(int i) const
 {
-	return _nodes[_N+i].state;
+	return _nodes[i].state;
 }
 
 float Network::parseArg(int i, Ant* a) const
@@ -85,4 +142,29 @@ float Network::parseArg(int i, Ant* a) const
 			}
 	}
 	return 0;
+}
+
+int Network::N() const
+{
+	return _nodes.size()-_ocount;
+}
+
+std::ostream& operator<<(std::ostream &os, const Network& n) {
+	os << "\nNetwork with " << n.N() << " nodes with " << n._inputs.size() << " inputs and " << n._ocount << " outputs\n";
+
+	for(int i = 0; i < n._inputs.size(); i++) {
+		os << "INPUT NODE " << i << " has bias " << n._inputs[i].bias << " and the following children:\n";
+		for (int j = 0; j < n._inputs[i].children.size(); j++) {
+			os << "\tCHILD " << n._inputs[i].children[j] << " with weight " << n._inputs[i].weights[j] << "\n";
+		}
+	}
+
+	for(int i = n._ocount; i < n._nodes.size(); i++) {
+		os << "NODE " << i << " has bias " << n._nodes[i].bias << " and the following children:\n";
+		for (int j = 0; j < n._nodes[i].children.size(); j++) {
+			os << "\tCHILD " << n._nodes[i].children[j] << " with weight " << n._nodes[i].weights[j] << "\n";
+		}
+	}
+
+	return os;
 }
