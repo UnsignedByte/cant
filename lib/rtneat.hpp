@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 22:08:11
+* @Last Modified time: 2021-05-26 00:06:11
 */
 
 #pragma once
@@ -22,7 +22,8 @@ const float INITIAL_CHILD_CHANCE = 0.6;
 const float REMOVE_CHILD_CHANCE = 0.05;
 const float ADD_CHILD_CHANCE = 0.05;
 const float MUTATE_VALUE = 0.01;
-const float MUTATE_RESET = 0.05;
+const float MUTATE_FLIP = 0.05;
+const float MUTATE_RESET = 0.02;
 const float ADD_NODE_CHANCE = 0.005;
 const float ADD_INPUT_CHANCE = 0.002;
 

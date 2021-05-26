@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 22:14:16
+* @Last Modified time: 2021-05-26 00:07:05
 */
 
 #include <stdexcept>
@@ -15,9 +15,14 @@ namespace nUtils {
 	void RANDOM_MUTATE(float& f) {
 		if (utils::rand::rand_01() < MUTATE_VALUE) {
 			if (utils::rand::rand_01() < MUTATE_RESET)
+			{
 				f = utils::rand::norm();
+			} else {
+				if (utils::rand::rand_01() < MUTATE_FLIP)
+					f *= -1;
 
-			f *= (std::tanh(utils::rand::norm())/10+1);
+				f *= (std::tanh(utils::rand::norm())/10+1);
+			}
 		}
 	}
 
