@@ -2,14 +2,14 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 21:34:32
+* @Last Modified time: 2021-05-25 23:56:37
 */
 #pragma once
 
 #include <SFML/Graphics.hpp>
 
 namespace constants {
-	const float movSpeed = 0.01;
+	const float movSpeed = 0.01f;
 }
 
 namespace utils {
@@ -74,7 +74,11 @@ namespace utils {
 	sf::Color HS_vec_to_RGBA(sf::Vector2f hs_vec);
 }
 
-std::ostream &operator<<(std::ostream &, const sf::Vector2f &);
+template<typename T>
+std::ostream &operator<<(std::ostream &os, const sf::Vector2<T> &v) {
+	os << "(" << v.x << ", " << v.y << ")";
+	return os;
+}
 
 template<typename T>
 std::ostream &operator<<(std::ostream &os, const sf::Rect<T> v) {
@@ -97,9 +101,9 @@ float arfmod(float, float);
  */
 template<typename A, typename B>
 sf::Vector2f arfmod(const sf::Vector2<A> &a, const sf::Vector2<B> &b) {
-	sf::Vector2f j = sf::Vector2f(a);
-	sf::Vector2f k = sf::Vector2f(b);
-	return sf::Vector2f(arfmod(j.x, k.x), arfmod(j.y, k.y));
+	// sf::Vector2f j = sf::Vector2f(a);
+	// sf::Vector2f k = sf::Vector2f(b);
+	return sf::Vector2f(arfmod((float)a.x, (float)b.x), arfmod((float)a.y, (float)b.y));
 }
 
 template<typename T>

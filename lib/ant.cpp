@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 15:33:18
+* @Last Modified time: 2021-05-25 23:37:56
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -21,13 +21,14 @@ void Ant::tick()
 {
 	// _dir+=(utils::rand::rand_01()-0.5f)/2.f;
 	_brain.tick(this);
-	_dir+=std::tanh(_brain.output(0))*0.5;
+	_dir+=std::tanh(_brain.output(0))*0.5f;
 	_pos+=_dir.getVec();
 
 	// std::cout << _render << std::endl;
 
 	_pos = arfmod(_pos, _render->world()->getSize());
 
+	// _render->pheromone()[(int)_pos.y * _render->bounds().width + (int)_pos.x] += utils::math::polar2Cartesian(0);
 	_render->pheromone()[(int)_pos.y * _render->bounds().width + (int)_pos.x] += utils::math::polar2Cartesian(_brain.output(1));
 	// for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
 	// 	_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::Angle(_brain.output(1)).getVec();

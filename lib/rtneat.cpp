@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 22:07:52
+* @Last Modified time: 2021-05-25 22:14:16
 */
 
 #include <stdexcept>
@@ -48,9 +48,9 @@ namespace nUtils {
 
 		n.bias = utils::rand::norm();
 
-		if (n.children.size() > 0) {
-			printf("SIZESIZESIZE: %ld\n", n.children.size());
-		}
+		// if (n.children.size() > 0) {
+		// 	printf("SIZESIZESIZE: %ld\n", n.children.size());
+		// }
 
 		do {
 			n.children.push_back(utils::rand::urand(0,N));

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 22:09:20
+* @Last Modified time: 2021-05-25 23:53:05
 */
 #include <random>
 #include <cassert>
@@ -16,8 +16,8 @@ namespace utils {
 
 		// seed with 0 (for testing)
 		// std::seed_seq seed{0};
-
 		std::seed_seq seed{random_device()};
+
 		std::mt19937 random_engine(seed);
 		std::uniform_real_distribution<float> random_distribution(0.0, 1.0);
 		std::normal_distribution<float> normdist(0.0, 1.0);
@@ -150,11 +150,6 @@ namespace utils {
 		}
 		return rgba;
 	}
-}
-
-std::ostream &operator<<(std::ostream &os, const sf::Vector2f &v) {
-	os << "(" << v.x << ", " << v.y << ")";
-	return os;
 }
 
 float arfmod(float a, float b) {
