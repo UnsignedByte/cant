@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 11:08:07
+* @Last Modified time: 2021-05-26 11:14:33
 */
 
 #pragma once
@@ -74,8 +74,8 @@ public:
 	static Network mutate(Network n)
 	{
 		// std::cout << n << std::endl;
-		int inputCount = utils::rand::binom(10, ADD_INPUT_CHANCE);
-		int nodeCount = utils::rand::binom(10, ADD_NODE_CHANCE);
+		int inputCount = utils::rand::binom(50, ADD_INPUT_CHANCE);
+		int nodeCount = utils::rand::binom(50, ADD_NODE_CHANCE);
 		// int inputCount = 0;
 		// int nodeCount = 10;
 
@@ -152,8 +152,8 @@ public:
 	{
 		// printf("\nCREATING RANDOM BRAIN\n");
 
-		int inputCount = utils::rand::binom(10, INITIAL_INPUT_CHANCE);
-		int nodeCount = utils::rand::binom(10, INITIAL_NODE_CHANCE);
+		int inputCount = utils::rand::binom(50, INITIAL_INPUT_CHANCE);
+		int nodeCount = utils::rand::binom(50, INITIAL_NODE_CHANCE);
 		// int nodeCount = 10;
 
 		Network n(0, 2, std::vector<Node>(nodeCount));

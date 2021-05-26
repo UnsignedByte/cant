@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 11:07:55
+* @Last Modified time: 2021-05-26 11:16:03
 */
 #include <random>
 #include <cassert>
@@ -44,11 +44,11 @@ namespace utils {
 		}
 
 		int binom(int max, float chance) {
-			int r = 0;
 			for (int i = 0; i < max; i++) {
-				r += rand_01() < chance;
+				if (rand_01() > chance)
+					return i;
 			}
-			return r;
+			return max;
 		}
 
 		int urand(int min, int max) {
