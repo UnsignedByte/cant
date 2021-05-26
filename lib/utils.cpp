@@ -2,23 +2,36 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 23:53:05
+* @Last Modified time: 2021-05-26 11:07:55
 */
 #include <random>
 #include <cassert>
+#include <iterator>
+#include <iostream>
 #include <SFML/System.hpp>
 #include "utils.hpp"
 
 
 namespace utils {
 	namespace rand {
-		std::random_device random_device;
+		template<class T = std::mt19937, std::size_t N = T::state_size * sizeof(typename T::result_type)>
+		auto ProperlySeededRandomEngine () -> typename std::enable_if<N, T>::type {
+	    std::random_device source;
+	    // std::random_device::result_type random_data[2];
+	    std::random_device::result_type random_data[(N - 1) / sizeof(source()) + 1];
+	    std::generate(std::begin(random_data), std::end(random_data), std::ref(source));
+	    std::seed_seq seeds(std::begin(random_data), std::end(random_data));
+
+			// seeds.param(std::ostream_iterator<int>(std::cout, ", "));
+	    return T(seeds);
+		}
 
 		// seed with 0 (for testing)
-		// std::seed_seq seed{0};
-		std::seed_seq seed{random_device()};
+		// std::seed_seq seed = {0};
+		// std::mt19937 random_engine(seed);
 
-		std::mt19937 random_engine(seed);
+		std::mt19937 random_engine = ProperlySeededRandomEngine();
+
 		std::uniform_real_distribution<float> random_distribution(0.0, 1.0);
 		std::normal_distribution<float> normdist(0.0, 1.0);
 

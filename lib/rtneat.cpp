@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 00:07:05
+* @Last Modified time: 2021-05-26 11:08:24
 */
 
 #include <stdexcept>
@@ -32,17 +32,17 @@ namespace nUtils {
 		switch(p.type) {
 			case 0:
 				p.offsetDir = utils::rand::norm();
-				printf("Creating constant parameter with value %f\n", p.offsetDir);
+				// printf("Creating constant parameter with value %f\n", p.offsetDir);
 				break;
 			case 1:
-				printf("Creating random parameter\n");
+				// printf("Creating random parameter\n");
 				break;
 			case 3:
 				p.matchDir = utils::rand::rand_01()*M_PI*2;
 			case 2:
 				p.offsetDir = utils::rand::rand_01()*M_PI*2-M_PI;
 				p.offsetMag = utils::rand::norm();
-				printf("Creating parameter type %d with offset (%f, %f) and match %f\n", p.type, p.offsetDir, p.offsetMag, p.matchDir);
+				// printf("Creating parameter type %d with offset (%f, %f) and match %f\n", p.type, p.offsetDir, p.offsetMag, p.matchDir);
 				break;
 		}
 		return p;
@@ -63,63 +63,6 @@ namespace nUtils {
 		} while (utils::rand::rand_01() < INITIAL_CHILD_CHANCE);
 		return n;
 	}
-}
-
-void Network::propogate()
-{
-	for(int i = _ocount; i < _nodes.size(); i++)
-	{
-		_states[i] = std::tanh(_nodes[i].state);
-	}
-
-	for(int i = 0; i < _nodes.size(); i++) {
-		//reset state to accept new
-		_nodes[i].state = 0;
-	}
-
-	for(int i = 0; i < _inputs.size(); i++)
-	{
-		for (int j = 0; j < _inputs[i].children.size(); j++)
-		{
-			// printf("%d, %d, %d\n", _inputs[i].children[j], i, j);
-			_nodes[_inputs[i].children[j]].state += _inputs[i].state*_inputs[i].weights[j] + _inputs[i].bias;
-			// printf("Propogating input to child %d with state %f\n", C,  _nodes[C].state);
-		}
-	}
-
-	for(int i = _ocount; i < _nodes.size(); i++)
-	{
-		for (int j = 0; j < _nodes[i].children.size(); j++)
-		{
-			// if (_nodes[i].children[j] > _nodes.size()) {
-			// 	std::cout << *this << std::endl;
-			// 	std::cout << _nodes[i].children << std::endl;
-			// 	printf("%d, %d, %d\n", _nodes[i].children[j], i, j);
-			// 	throw std::runtime_error("Fucked");
-			// }
-			_nodes[_nodes[i].children[j]].state += _states[i]*_nodes[i].weights[j] + _nodes[i].bias;
-			// printf("Propogating to child %d with state %f\n", C, _states[i] + _nodes[C].state);
-		}
-	}
-
-	// printf("%f\n", _inputs[0].state);
-	// printf("%f\n", _nodes[0].state);
-	// printf("%f\n", _nodes[1].state);
-}
-
-void Network::tick(Ant* a)
-{
-	for(int i = 0; i < _inputs.size(); i++)
-	{
-		_inputs[i].state = parseArg(i, a);
-	}
-
-	propogate();
-}
-
-float Network::output(int i) const
-{
-	return _nodes[i].state;
 }
 
 float Network::parseArg(int i, Ant* a) const
@@ -149,6 +92,63 @@ float Network::parseArg(int i, Ant* a) const
 	return 0;
 }
 
+void Network::propogate()
+{
+	for(int i = _ocount; i < _nodes.size(); i++)
+	{
+		_states[i] = std::tanh(_nodes[i].state);
+	}
+
+	for(int i = 0; i < _nodes.size(); i++) {
+		//reset state to accept new
+		_nodes[i].state = 0;
+	}
+
+	for(int i = 0; i < _inputs.size(); i++)
+	{
+		for (int j = 0; j < _inputs[i].children.size(); j++)
+		{
+			// printf("%d, %d, %d\n", _inputs[i].children[j], i, j);
+			_nodes[_inputs[i].children[j]].state += _inputs[i].state*_inputs[i].weights[j] + _inputs[i].bias;
+			// printf("Propogating input to child %d with state %f\n", C,  _nodes[C].state);
+		}
+	}
+
+	for(int i = _ocount; i < _nodes.size(); i++)
+	{
+		for (int j = 0; j < _nodes[i].children.size(); j++)
+		{
+			if (_nodes[i].children[j] > _nodes.size()) {
+				std::cout << *this << std::endl;
+				std::cout << _nodes[i].children << std::endl;
+				printf("%d, %d, %d\n", _nodes[i].children[j], i, j);
+				throw std::runtime_error("Fucked");
+			}
+			_nodes[_nodes[i].children[j]].state += _states[i]*_nodes[i].weights[j] + _nodes[i].bias;
+			// printf("Propogating to child %d with state %f\n", C, _states[i] + _nodes[C].state);
+		}
+	}
+
+	// printf("%f\n", _inputs[0].state);
+	// printf("%f\n", _nodes[0].state);
+	// printf("%f\n", _nodes[1].state);
+}
+
+void Network::tick(Ant* a)
+{
+	for(int i = 0; i < _inputs.size(); i++)
+	{
+		_inputs[i].state = parseArg(i, a);
+	}
+
+	propogate();
+}
+
+float Network::output(int i) const
+{
+	return _nodes[i].state;
+}
+
 int Network::N() const
 {
 	return _nodes.size()-_ocount;
@@ -172,4 +172,126 @@ std::ostream& operator<<(std::ostream &os, const Network& n) {
 	}
 
 	return os;
+}
+
+void Network::prune() {
+
+	bool visited[N()] = {0};
+	// TRUE if node is not a dead end
+	bool dead[N()] = {0};
+
+	for (int i = 0; i < _inputs.size(); i++) {
+		bool valid = 0;
+		for (int j = 0; j < _inputs[i].children.size(); j++) {
+			bool k = _prune_prop(_inputs[i].children[j], visited, dead);
+			valid |= k;
+
+			// printf("@ Input %d: Testing %d\n", i, _inputs[i].children[j]);
+			// leads to a dead end, remove this weight
+			if (!k) {
+				// printf("@Input %d:Node %d is dead, pruning weight\n", i, _inputs[i].children[j]);
+				_inputs[i].children.erase(_inputs[i].children.begin()+j);
+				_inputs[i].weights.erase(_inputs[i].weights.begin()+j);
+				j--;
+			}
+		}
+
+		// prune input
+		if (!valid) {
+			_inputs.erase(_inputs.begin()+i);
+			_argparams.erase(_argparams.begin()+i);
+			i--;
+		}
+	}
+
+	// FIX child propogation IDs now that nodes will be removed
+	// rem[i] is how much node i needs to be shifted
+	int rem[N()];
+	rem[0] = !(visited[0] && dead[0]);
+	for (int i = 1; i < N(); i++) {
+		rem[i] = rem[i-1]+!(visited[i] && dead[i]);
+		// printf("REMOVE IND %d = %d, visited %d, dead %d\n", i, rem[i], visited[i], dead[i]);
+	}
+
+	int ind = 0;
+	_nodes.erase(
+		std::remove_if(_nodes.begin()+_ocount, _nodes.end(),
+			[&ind, &dead, &visited](Node& n) {
+				// A node must be VISITED and not a dead end to survive (dead[i] is dead if FALSE)
+				// printf("Node %d returns %d\n", ind, !(visited[ind] && dead[ind]));
+				return !(visited[ind++] && dead[ind-1]);
+			}
+		), _nodes.end());
+
+	// prune from states as well
+	ind = 0;
+	_states.erase(
+		std::remove_if(_states.begin()+_ocount, _states.end(),
+			[&ind, &dead, &visited](float& n) {
+				// A node must be VISITED and not a dead end to survive (dead[i] is dead if FALSE)
+				return !(visited[ind++] && dead[ind-1]);
+			}
+		), _states.end());
+
+	// fix inputs
+	for(int i = 0; i < _inputs.size(); i++) {
+		for (int j = 0; j < _inputs[i].children.size(); j++) {
+			// skip if it leads to an output node
+			if (_inputs[i].children[j] < _ocount) continue;
+
+			// printf("Shifting input node from %d to %d by %d\n", i, _inputs[i].children[j], rem[_inputs[i].children[j]-_ocount]);
+			_inputs[i].children[j] -= rem[_inputs[i].children[j]-_ocount];
+		}
+	}
+
+	// fix nodes
+	for(int i = _ocount; i < _nodes.size(); i++) {
+		for (int j = 0; j < _nodes[i].children.size(); j++) {
+			// skip if it leads to an output node
+			if (_nodes[i].children[j] < _ocount) continue;
+
+			// printf("Shifting input node from %d to %d by %d\n", i, _nodes[i].children[j], rem[_nodes[i].children[j]-_ocount]);
+			_nodes[i].children[j] -= rem[_nodes[i].children[j]-_ocount];
+		}
+	}
+}
+
+// return FALSE if node is a dead end/leads to only dead ends
+bool Network::_prune_prop(int i, bool* visited, bool* dead) {
+	// if (i < 0 || i > _nodes.size())
+	// 	std::cout << *this << std::endl;
+	// I is an output node OR leads to a loop
+	if (i < _ocount) return 1;
+
+	// printf("@ node %d: Visited %d, dead %d\n", i, visited[i-_ocount], dead[i-_ocount]);
+	// if the node has been visited, return its calculated value
+	if (visited[i-_ocount]) return dead[i-_ocount];
+
+	//set to visited
+	visited[i-_ocount] = 1;
+
+	//should initially already be 0
+	dead[i-_ocount] = 1;
+
+	bool d;
+
+	for (int j = 0; j < _nodes[i].children.size(); j++) {
+		// return TRUE if node is self-referencing, or if it is prunable
+		// printf("@ node %d: Testing %d\n", i, _nodes[i].children[j]);
+		bool k = _nodes[i].children[j] == i || _prune_prop(_nodes[i].children[j], visited, dead);
+		d |= k;
+		// printf("%d, %d\n", _nodes[i].children[j] == i, k);
+
+		// leads to a dead end, remove this weight
+		if (!k) {
+			// printf("@ node %d: Node %d is dead, pruning weight\n", i, _nodes[i].children[j]);
+			_nodes[i].children.erase(_nodes[i].children.begin()+j);
+			_nodes[i].weights.erase(_nodes[i].weights.begin()+j);
+			j--;
+		}
+	}
+
+	dead[i-_ocount] = d;
+
+	return d;
 }

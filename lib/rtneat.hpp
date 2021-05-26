@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 00:06:11
+* @Last Modified time: 2021-05-26 11:08:07
 */
 
 #pragma once
@@ -15,8 +15,8 @@
 
 struct Ant;
 
-const float INITIAL_INPUT_CHANCE = 0.9;
-const float INITIAL_NODE_CHANCE = 0.95;
+const float INITIAL_INPUT_CHANCE = 0.7;
+const float INITIAL_NODE_CHANCE = 0.8;
 const float INITIAL_CHILD_CHANCE = 0.6;
 
 const float REMOVE_CHILD_CHANCE = 0.05;
@@ -73,6 +73,7 @@ public:
 
 	static Network mutate(Network n)
 	{
+		// std::cout << n << std::endl;
 		int inputCount = utils::rand::binom(10, ADD_INPUT_CHANCE);
 		int nodeCount = utils::rand::binom(10, ADD_NODE_CHANCE);
 		// int inputCount = 0;
@@ -142,12 +143,14 @@ public:
 
 		// std::cout << n << std::endl;
 
+		n.prune();
+
 		return n;
 	}
 
 	static Network random()
 	{
-		printf("\nCREATING RANDOM BRAIN\n");
+		// printf("\nCREATING RANDOM BRAIN\n");
 
 		int inputCount = utils::rand::binom(10, INITIAL_INPUT_CHANCE);
 		int nodeCount = utils::rand::binom(10, INITIAL_NODE_CHANCE);
@@ -164,15 +167,21 @@ public:
 			n._argparams.push_back(nUtils::RANDOM_PARAMS());
 		}
 
-		printf("Brain has %d inputs and %d nodes\n", inputCount, nodeCount);
+		// printf("Brain has %d inputs and %d nodes\n", inputCount, nodeCount);
 
 		// n._inputs[0].children.push_back(0);
 		// n._inputs[0].weights.push_back(1);
 		// n._inputs[0].bias = -0.5;
 		// n._nodes[0].children.push_back(n._N);
 		// n._nodes[0].weights.push_back(1);
+
+		// std::cout << "PRE PRUNE:" << n << std::endl;
+		n.prune();
+		// std::cout << "POST PRUNE:" << n << std::endl;
 		return n;
 	}
+
+	void prune();
 
 	int N() const;
 
@@ -184,6 +193,7 @@ public:
 
 	friend std::ostream& operator<<(std::ostream &os, const Network& n);
 private:
+	bool _prune_prop(int i, bool* visited, bool* dead);
 	float parseArg(int, Ant*) const;
 	int _ocount;
 	std::vector<Node> _inputs;
