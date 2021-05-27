@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 23:58:37
+* @Last Modified time: 2021-05-27 00:25:17
 */
 #include <random>
 #include <cassert>
@@ -27,10 +27,10 @@ namespace utils {
 		}
 
 		// seed with 0 (for testing)
-		std::seed_seq seed = {0};
-		std::mt19937 random_engine(seed);
+		// std::seed_seq seed = {0};
+		// std::mt19937 random_engine(seed);
 
-		// std::mt19937 random_engine = ProperlySeededRandomEngine();
+		std::mt19937 random_engine = ProperlySeededRandomEngine();
 
 		std::uniform_real_distribution<float> random_distribution(0.0, 1.0);
 		std::normal_distribution<float> normdist(0.0, 1.0);
