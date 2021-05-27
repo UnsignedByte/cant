@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 18:52:07
+* @Last Modified time: 2021-05-27 00:19:16
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -12,17 +12,26 @@
 #include "render.hpp"
 #include "hill.hpp"
 
-const float ANT_SIZE = 1.5f;
+const float ANT_SIZE = 3.f;
 
 // const int DOT[] = {0, 0, 0, 1, 0, -1, -1, 0, 1, 0};
 
 // returns TRUE if ant has died
 void Ant::tick()
 {
+	// std::cout << _brain << std::endl;
+	// std::cout << "BEFORE: " << _dir << std::endl;
 	// _dir+=(utils::rand::rand_01()-0.5f)/2.f;
 	_brain.tick(this);
 
+	// std::cout << _brain << std::endl;
+
+	// std::cout << _dir << std::endl;
+
 	int pidx = (int)_pos.y * _render->bounds().width + (int)_pos.x; // current screen position
+
+	// printf("%d, %f\n", pidx, _dir);
+	// std::cout << _pos << std::endl;
 
 	//current amount of food
 	float currFood = std::sqrt(utils::math::magsq(_render->food()[pidx]));
@@ -40,36 +49,43 @@ void Ant::tick()
 	_render->_E -= eatVal;
 
 	// drop pheromone at tile
-	_render->pheromone()[pidx] += utils::math::polar2Cartesian(_brain.output(1))*std::tanh(_brain.output(2));
+	_render->pheromone()[pidx] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
+	// for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
+	// 	_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
+	// }
 
+	// std::cout << _render->pheromone()[pidx] << std::endl;
+	// printf("%f and %f\n", _brain.output(0), std::tanh(_brain.output(0))*M_PI/8);
+	// std::cout << _dir << std::endl;
+
+	// std::cout << "PRE ADD:" << _dir << " ADDING " << std::tanh(_brain.output(0))*M_PI/8 << " BRUH " << _brain.output(0) << std::endl;
+	// std::cout << _brain << std::endl;
 	// move
 	_dir+=std::tanh(_brain.output(0))*M_PI/8;
-	_pos+=_dir.getVec();
+	_pos+=utils::math::polar2Cartesian(_dir);
+
+	// std::cout << _dir << std::endl;
 
 	// std::cout << _render << std::endl;
 
 	_pos = arfmod(_pos, _render->world()->getSize());
 
-	// _render->pheromone()[(int)_pos.y * _render->bounds().width + (int)_pos.x] += utils::math::polar2Cartesian(0);
-	// for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
-	// 	_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::Angle(_brain.output(1)).getVec();
-	// }
-	
-	// sf::Color test = utils::HSVec2RGB(_dir.getVec());
-	// printf("%d, %d, %d\n", test.r, test.g, test.b);
 	_E--;
+	_age--;
+
+	// std::cout << "LAST TICK:" << _dir << std::endl;
 }
 
 bool Ant::render(sf::VertexArray& arr, int i) const
 {
 	arr[i].position = _pos;
-	arr[i+1].position = _pos+(_dir+5.f/6*M_PI).getVec()*ANT_SIZE-_dir.getVec()*ANT_SIZE;
-	arr[i+2].position = _pos+(_dir-5.f/6*M_PI).getVec()*ANT_SIZE-_dir.getVec()*ANT_SIZE;
+	arr[i+1].position = _pos+utils::math::polar2Cartesian(_dir+5.f/6*M_PI, ANT_SIZE);
+	arr[i+2].position = _pos+utils::math::polar2Cartesian(_dir-5.f/6*M_PI, ANT_SIZE);
 
 	// set color of vertices
-	arr[i].color = sf::Color(255, 255, 255, 255);
-	arr[i+1].color = sf::Color(255, 255, 255, 255);
-	arr[i+2].color = sf::Color(255, 255, 255, 255);
+	// arr[i].color = sf::Color(255, 255, 255, 255);
+	// arr[i+1].color = sf::Color(255, 255, 255, 255);
+	// arr[i+2].color = sf::Color(255, 255, 255, 255);
 
 	//if any of the ant's vertices are out of bounds
 
@@ -96,8 +112,9 @@ sf::Vector2f Ant::getPos() const
 	return _pos;
 }
 
-utils::math::Angle Ant::getAngle() const
+float Ant::getAngle() const
 {
+	// printf("Getting %f\n", _dir);
 	return _dir;
 }
 
@@ -106,9 +123,14 @@ float Ant::E() const
 	return _E;
 }
 
-float Ant::setE(float available)
+bool Ant::alive() const
 {
-	float d = std::min(available,_stomach_equil-_E);
+	return _E >= 0 && _age >= 0;
+}
+
+float Ant::setE()
+{
+	float d = std::min(0.f,_stomach_equil-_E);
 	_E += d;
 	return d;
 }
@@ -116,4 +138,9 @@ float Ant::setE(float available)
 Render* Ant::render()
 {
 	return _render;
+}
+
+Network Ant::brain() const
+{
+	return _brain;
 }

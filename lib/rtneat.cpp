@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 17:23:18
+* @Last Modified time: 2021-05-27 00:21:53
 */
 
 #include <stdexcept>
@@ -12,7 +12,7 @@
 #include "render.hpp"
 
 namespace nUtils {
-	void RANDOM_MUTATE(float& f, bool allowFlip) {
+	void RANDOM_MUTATE(float& f, bool allowFlip, float max) {
 		if (utils::rand::rand_01() < MUTATE_VALUE) {
 			if (utils::rand::rand_01() < MUTATE_RESET)
 			{
@@ -23,6 +23,7 @@ namespace nUtils {
 
 				f *= (std::tanh(utils::rand::norm())/10+1);
 			}
+			f = std::min(f, max);
 		}
 	}
 
@@ -68,7 +69,8 @@ namespace nUtils {
 
 float Network::parseArg(int i, Ant* a) const
 {
-	sf::Vector2f offsetPos = a->getPos()+utils::math::polar2Cartesian(a->getAngle().getAngle()+_argparams[i].offsetDir, _argparams[i].offsetMag);
+	// std::cout << a->getAngle() << std::endl;
+	sf::Vector2f offsetPos = a->getPos()+utils::math::polar2Cartesian(a->getAngle()+_argparams[i].offsetDir, _argparams[i].offsetMag);
 	int W = a->render()->bounds().width;
 	int H = a->render()->bounds().height;
 	int idx = arimod((int)offsetPos.y, H) * W + arimod((int) offsetPos.x, W);
@@ -80,15 +82,17 @@ float Network::parseArg(int i, Ant* a) const
 		case 2: // PHERMONE INTENSITY (squared) at offset
 		case 3: // PHERMONE Activation by color
 		{
+			// return 0;
 			sf::IntRect bounds = a->render()->bounds();
 
 			//Color vector at point
 			sf::Vector2f col = a->render()->pheromone()[idx];
-			if (_argparams[i].type == 1)
+			if (_argparams[i].type == 2)
 				return utils::math::magsq(col);
 			else {
 				// circular radian difference between two angles, normalized to (-1,1).
-				float d = arfmod(d-_argparams[i].matchDir, M_PI*2);
+				float d = arfmod(std::atan2(col.y, col.x)-_argparams[i].matchDir, M_PI*2);
+				// printf("%f\n", d);
 				d = 1-std::min(d, (float)M_PI*2-d)/M_PI;
 				// square to emphasize values near 1
 				return d*d;
@@ -96,6 +100,7 @@ float Network::parseArg(int i, Ant* a) const
 		}
 		case 4: // FOOD amount at offset
 		{
+			// return 0;
 			//return magnitude squared of color vector at point
 			return utils::math::magsq(a->render()->food()[idx]);
 		}
@@ -169,17 +174,23 @@ std::ostream& operator<<(std::ostream &os, const Network& n) {
 	os << "\nNetwork with " << n.N() << " nodes with " << n._inputs.size() << " inputs and " << n._ocount << " outputs\n";
 
 	for(int i = 0; i < n._inputs.size(); i++) {
-		os << "INPUT NODE " << i << " has bias " << n._inputs[i].bias << " and the following children:\n";
+		os << "INPUT NODE " << i << "\n";
+		os << "TYPE: " << n._argparams[i].type << " with params offsetDir: " << n._argparams[i].offsetDir << " offsetMag: " << n._argparams[i].offsetMag  << " matchDir: " << n._argparams[i].matchDir << "\n";
+		os << "NODE has bias " << n._inputs[i].bias << " and is at state " << n._inputs[i].state << " and the following children:\n";
 		for (int j = 0; j < n._inputs[i].children.size(); j++) {
 			os << "\tCHILD " << n._inputs[i].children[j] << " with weight " << n._inputs[i].weights[j] << "\n";
 		}
 	}
 
 	for(int i = n._ocount; i < n._nodes.size(); i++) {
-		os << "NODE " << i << " has bias " << n._nodes[i].bias << " and the following children:\n";
+		os << "NODE " << i << " has bias " << n._nodes[i].bias  << " and is at state " << n._nodes[i].state << " and the following children:\n";
 		for (int j = 0; j < n._nodes[i].children.size(); j++) {
 			os << "\tCHILD " << n._nodes[i].children[j] << " with weight " << n._nodes[i].weights[j] << "\n";
 		}
+	}
+
+	for(int i = 0; i < n._ocount; i++) {
+		os << "OUTPUT NODE " << i << " has state " << n._nodes[i].state << "\n";
 	}
 
 	return os;

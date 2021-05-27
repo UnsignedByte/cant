@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 17:03:41
+* @Last Modified time: 2021-05-26 22:48:08
 */
 
 #pragma once
@@ -64,7 +64,7 @@ public:
 
 	void addHill(Hill);
 
-	void populateRandom(int, int, int, int);
+	void populateRandom(int, int);
 
 	void tick();
 

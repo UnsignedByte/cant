@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 18:06:35
+* @Last Modified time: 2021-05-26 23:58:37
 */
 #include <random>
 #include <cassert>
@@ -27,10 +27,10 @@ namespace utils {
 		}
 
 		// seed with 0 (for testing)
-		// std::seed_seq seed = {7};
-		// std::mt19937 random_engine(seed);
+		std::seed_seq seed = {0};
+		std::mt19937 random_engine(seed);
 
-		std::mt19937 random_engine = ProperlySeededRandomEngine();
+		// std::mt19937 random_engine = ProperlySeededRandomEngine();
 
 		std::uniform_real_distribution<float> random_distribution(0.0, 1.0);
 		std::normal_distribution<float> normdist(0.0, 1.0);
@@ -54,62 +54,66 @@ namespace utils {
 		int urand(int min, int max) {
 			return static_cast<int>(utils::rand::rand_01() * (max - min) + min);
 		}
+
+		float urandf(float min, float max) {
+			return utils::rand::rand_01() * (max - min) + min;
+		}
 	}
 	namespace math {
 		float sigmoid(float x) {
 			return 1/(1+std::exp(-x));
 		}
 
-		void Angle::operator+=(float a) {
-			setAngle(_angle + a);
-		}
+		// void Angle::operator+=(float a) {
+		// 	setAngle(_angle + a);
+		// }
 
-		void Angle::operator+=(Angle a) {
-			setAngle(_angle + a.getAngle());
-		}
+		// void Angle::operator+=(Angle a) {
+		// 	setAngle(_angle + a.getAngle());
+		// }
 
-		Angle Angle::operator+(float a) const {
-			return Angle(a + _angle);
-		}
+		// Angle Angle::operator+(float a) const {
+		// 	return Angle(a + _angle);
+		// }
 
-		Angle Angle::operator+(Angle a) const {
-			return Angle(a.getAngle() + _angle);
-		}
+		// Angle Angle::operator+(Angle a) const {
+		// 	return Angle(a.getAngle() + _angle);
+		// }
 
-		Angle Angle::operator-(float a) const {
-			return Angle(_angle - a);
-		}
+		// Angle Angle::operator-(float a) const {
+		// 	return Angle(_angle - a);
+		// }
 
-		Angle Angle::operator-(Angle a) const {
-			return Angle(_angle - a.getAngle());
-		}
+		// Angle Angle::operator-(Angle a) const {
+		// 	return Angle(_angle - a.getAngle());
+		// }
 
-		void Angle::setAngle(float angle) {
-			_angle = arfmod(angle, (float)M_PI*2);
-		}
+		// void Angle::setAngle(float angle) {
+		// 	_angle = arfmod(angle, (float)M_PI*2);
+		// }
 
-		float Angle::getAngle() const {
-			return _angle;
-		}
+		// float Angle::getAngle() const {
+		// 	return _angle;
+		// }
 
-		sf::Vector2f Angle::getVec() const {
-			return {std::cos(_angle), std::sin(_angle)};
-		}
+		// sf::Vector2f Angle::getVec() const {
+		// 	return {std::cos(_angle), std::sin(_angle)};
+		// }
 
-		sf::Vector2f polar2Cartesian(const float& dir, const float& mag) {
+		sf::Vector2f polar2Cartesian(const float dir, const float mag) {
 			return {std::cos(dir)*mag, std::sin(dir)*mag};
 		}
 
 		//magnitude of vector squared
-		float magsq(const float& x, const float& y) {
+		float magsq(const float x, const float y) {
 			return x*x+y*y;
 		}
 
-		float magsq(const sf::Vector2f& v) {
+		float magsq(const sf::Vector2f v) {
 			return magsq(v.x, v.y);
 		}
 
-		float dstsq(const sf::Vector2f& a, const sf::Vector2f& b) {
+		float dstsq(const sf::Vector2f a, const sf::Vector2f b) {
 			return magsq(a.x-b.x,a.y-b.y);
 		}
 	}

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 17:06:53
+* @Last Modified time: 2021-05-27 00:23:33
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -18,6 +18,7 @@
 const int WIDTH = 1000;
 const int HEIGHT = 800;
 const sf::Time frameTime = sf::seconds(1.f/60.f);
+bool doRender = true;
 
 int main()
 {
@@ -37,8 +38,8 @@ int main()
 	// for(int i = 0; i < 50; i++) {
 	// 	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 50, 200, 1000000, &renderer));
 	// }
-	// renderer.populateRandom(1,1,1,1);
-	renderer.populateRandom(20, 30, 50, 100);
+	// renderer.populateRandom(1,1);
+	renderer.populateRandom(30, 50);
 
 	// window.setFramerateLimit(60);
 	while (window.isOpen())
@@ -71,6 +72,9 @@ int main()
 					case sf::Keyboard::D:
 						renderer.D = 1;
 						break;
+					case sf::Keyboard::R:
+						doRender ^= 1;
+						break;
 				}
 				break;
 			case sf::Event::KeyReleased:
@@ -93,19 +97,21 @@ int main()
 			}
 		}
 
-		window.clear();
-
 		renderer.tick();
 
-		renderer.render();
+		if (doRender) {
+			window.clear();
 
-		window.draw(renderer.getDrawn());
+			renderer.render();
 
-		window.display();
+			window.draw(renderer.getDrawn());
 
-		// std::cout << renderClock.getElapsedTime().asMilliseconds() << std::endl;
-		sf::sleep(frameTime-renderClock.getElapsedTime());
-		renderClock.restart();
+			window.display();
+
+			// std::cout << renderClock.getElapsedTime().asMilliseconds() << std::endl;
+			sf::sleep(frameTime-renderClock.getElapsedTime());
+			renderClock.restart();
+		}
 	}
 
 	return 0;

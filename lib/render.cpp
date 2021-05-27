@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 18:57:06
+* @Last Modified time: 2021-05-26 23:20:26
 */
 
 #include <iostream>
@@ -42,13 +42,13 @@ void Render::addHill(Hill h)
 	hills.push_back(h);
 }
 
-void Render::populateRandom(int mincount, int maxcount, int antmin, int antmax)
+void Render::populateRandom(int mincount, int maxcount)
 {
 	int count = utils::rand::urand(mincount, maxcount);
 
 	// uses 10% of the energy to create anthills
 	for (int i = 0; i < count; i++) {
-		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, antmin, antmax, _TE/count, this));
+		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, _TE/2/count, this));
 	}
 }
 

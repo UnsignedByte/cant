@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 15:02:44
+* @Last Modified time: 2021-05-26 23:43:14
 */
 #pragma once
 
@@ -25,50 +25,51 @@ namespace utils {
 		 * Return a random integer in the range [min, max)
 		 */
 		int urand(int min, int max);
+		float urandf(float min, float max);
 	}
 	namespace math {
 		float sigmoid(float);
 
-		/**
-		 * Angle class with helper functions; contains a float direction and a computable unit vector
-		 */
-		struct Angle {
-		public:
-			Angle() = default;
+		// /**
+		//  * Angle class with helper functions; contains a float direction and a computable unit vector
+		//  */
+		// struct Angle {
+		// public:
+		// 	Angle() = default;
 
-			Angle(float angle) {
-				setAngle(angle);
-			}
+		// 	Angle(float angle) {
+		// 		setAngle(angle);
+		// 	}
 
-			void setAngle(float angle);
+		// 	void setAngle(float angle);
 
-			void operator+=(float a);
+		// 	void operator+=(float a);
 
-			void operator+=(Angle a);
+		// 	void operator+=(Angle a);
 
-			Angle operator+(float a) const;
+		// 	Angle operator+(float a) const;
 
-			Angle operator+(Angle a) const;
+		// 	Angle operator+(Angle a) const;
 
-			Angle operator-(float a) const;
+		// 	Angle operator-(float a) const;
 
-			Angle operator-(Angle a) const;
+		// 	Angle operator-(Angle a) const;
 
-			[[nodiscard]]
-			float getAngle() const;
+		// 	[[nodiscard]]
+		// 	float getAngle() const;
 
-			[[nodiscard]]
-			sf::Vector2f getVec() const;
+		// 	[[nodiscard]]
+		// 	sf::Vector2f getVec() const;
 
-		private:
-			float _angle;
-		};
+		// private:
+		// 	float _angle;
+		// };
 
-		sf::Vector2f polar2Cartesian(const float&, const float& = 1);
+		sf::Vector2f polar2Cartesian(const float dir, const float mag = 1);
 
-		float magsq(const float&, const float&);
-		float magsq(const sf::Vector2f&);
-		float dstsq(const sf::Vector2f&, const sf::Vector2f&);
+		float magsq(const float, const float);
+		float magsq(const sf::Vector2f);
+		float dstsq(const sf::Vector2f, const sf::Vector2f);
 	}
 
 	/**

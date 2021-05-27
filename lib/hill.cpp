@@ -2,13 +2,12 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 17:02:02
+* @Last Modified time: 2021-05-26 23:18:58
 */
 #include "hill.hpp"
 #include "render.hpp"
 // #include <cstdio>
 
-const float HILL_SIZE = 5.f;
 const int DIRS[16] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
 
 int Hill::antCount() const
@@ -44,7 +43,9 @@ void Hill::render() const
 	_render->world()->draw(ants);
 	sf::CircleShape hill(HILL_SIZE);
 	hill.setPosition(_pos-sf::Vector2f(HILL_SIZE, HILL_SIZE));
-	hill.setFillColor(sf::Color(148, 102, 28, 255));
+	hill.setFillColor(sf::Color(127,127,127,63));
+	hill.setOutlineThickness(1);
+	hill.setOutlineColor(sf::Color(127,127,127));
 	_render->world()->draw(hill);
 }
 
@@ -55,7 +56,7 @@ void Hill::tick() //calculate movements for all ants in hill
 	for(int i = 0; i < _ants.size(); i++) {
 		// IF within hill, transfer energy
 		if (utils::math::dstsq(_pos, _ants[i].getPos()) < HILL_SIZE*HILL_SIZE) {
-			_E-= _ants[i].setE(_E);
+			_E-= _ants[i].setE();
 		}
 	}
 
@@ -67,9 +68,17 @@ void Hill::tick() //calculate movements for all ants in hill
 			{
 				a.tick();
 				// printf("test\n");
-				return a.E() < 0;
+				return !a.alive();
 			}
 		), _ants.end());
+
+	//replenish energy of ants
+	for(int i = 0; i < _ants.size(); i++) {
+		// IF chance passed and the ant is within the range, create a new ant
+		if (utils::math::dstsq(_pos, _ants[i].getPos()) < HILL_SIZE*HILL_SIZE && utils::rand::rand_01() < BIRTH_CHANCE) {
+			addAnt(_ants[i].brain());
+		}
+	}
 }
 
 float Hill::E() const
@@ -85,4 +94,13 @@ float Hill::E() const
 void Hill::setRender(Render* r)
 {
 	_render = r;
+}
+
+void Hill::addAnt(Network brain) {
+	if (_E-_reserve > _ant_allocated)
+	{
+		_ants.push_back(Ant(_pos, _ant_allocated, MAX_STOMACH_SIZE, brain, _render, this));
+		_E-=_ant_allocated;
+		Ant::mutate(_ants.back());
+	}
 }

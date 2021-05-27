@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 18:51:13
+* @Last Modified time: 2021-05-26 23:53:03
 */
 
 #pragma once
@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <cmath>
 #include <iostream>
+#include <limits>
 #include "utils.hpp"
 
 struct Ant;
@@ -53,7 +54,7 @@ namespace nUtils {
 		float matchDir = 0;
 	};
 
-	void RANDOM_MUTATE(float& f, bool allowFlip = true);
+	void RANDOM_MUTATE(float& f, bool allowFlip = true, float max = std::numeric_limits<float>::infinity());
 
 	ArgParams RANDOM_PARAMS();
 

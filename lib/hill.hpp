@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 17:01:47
+* @Last Modified time: 2021-05-27 00:23:09
 */
 
 #pragma once
@@ -12,31 +12,30 @@
 
 struct Render;
 
+const float HILL_SIZE = 5.f;
+const float MAX_STOMACH_SIZE = 2400;
+// chance to create new ant based off current one;
+const float BIRTH_CHANCE = 0.0;
+
 struct Hill
 {
 public:
 	Hill() = default;
-	Hill(float x, float y, int antCount, float E, Render* rt, Network brain): _pos(x,y), _render(rt), _E(E), _brain(brain)
+	Hill(float x, float y, float E, float aa, float r, Render* rt, Network brain): _pos(x,y), _render(rt), _E(E), _ant_allocated(aa), _reserve(r)
 	{
-		float AllocatedE = _E/antCount;
-		for (int i = 0; i < antCount; i++)
-		{
-			_ants.push_back(Ant(_pos, AllocatedE/2, AllocatedE, _brain, _render, this));
-			Ant::mutate(_ants.back());
+		// all hills will start with 5 ants
+		for (int i = 0; i < 5; i++) {
+			addAnt(brain);
 		}
 	}
 
-	static Hill randomHill(int boundX, int boundY, int a, int e, Render* rt)
+	static Hill randomHill(int boundX, int boundY, int e, Render* rt)
 	{
-		return Hill(utils::rand::rand_01()*boundX, utils::rand::rand_01()*boundY, a, e, rt, Network::random());
-	}
-
-	static Hill randomHill(int boundX, int boundY, int amin, int amax, int e, Render* rt)
-	{
-		return randomHill(boundX, boundY, utils::rand::urand(amin, amax), e, rt);
+		return Hill(utils::rand::rand_01()*boundX, utils::rand::rand_01()*boundY, e, utils::rand::urandf(MAX_STOMACH_SIZE/2,MAX_STOMACH_SIZE), utils::rand::urandf(0, e), rt, Network::random());
 	}
 
 	void tick();
+	void addAnt(Network brain);
 
 	int antCount() const;
 
@@ -49,6 +48,5 @@ private:
 	std::vector<Ant> _ants; // list of ants
 	sf::Vector2f _pos;
 	Render* _render;
-	Network _brain;
-	float _E;
+	float _E, _reserve, _ant_allocated;
 };
