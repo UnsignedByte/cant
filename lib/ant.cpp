@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 09:41:42
+* @Last Modified time: 2021-05-27 14:58:52
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -11,8 +11,6 @@
 #include <cmath>
 #include "render.hpp"
 #include "hill.hpp"
-
-const float ANT_SIZE = 3.f;
 
 // const int DOT[] = {0, 0, 0, 1, 0, -1, -1, 0, 1, 0};
 
@@ -34,27 +32,28 @@ void Ant::tick()
 	// std::cout << _pos << std::endl;
 
 	//current amount of food
-	float currFood = utils::math::mag(_render->food()[pidx]);
+	float currFood = utils::math::mag(_render->food().data[pidx]);
 	// eat food at tile
 	float eatVal = std::min(currFood*FOOD_CONVERSION, _stomach_size-_E);
 	// if (eatVal > 0) {
-	// 	std::cout << _render->food()[pidx] << std::endl;
+	// 	std::cout << _render->food().data[pidx] << std::endl;
 	// 	printf("%d: %f %f\n", pidx, utils::math::magsq(_render->food()[pidx]), eatVal);
 	// }
 
-	// _E += eatVal;
+	_E += eatVal;
 	// remove this food from the screen
-	// _render->food()[pidx] = utils::math::polar2Cartesian(2*M_PI/3, currFood-eatVal/FOOD_CONVERSION);
+	_render->food().data[pidx] = utils::math::polar2Cartesian(2*M_PI/3, currFood-eatVal/FOOD_CONVERSION);
 	// remove this food from global energy use
 	// _render->_E -= eatVal;
 
 	// drop pheromone at tile
-	_render->pheromone()[pidx] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
+	_render->pheromone().data[pidx] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
+	_render->pheromone().active[pidx] = 1;
 	// for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
-	// 	_render->pheromone()[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
+	// 	_render->pheromone().data[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
 	// }
 
-	// std::cout << _render->pheromone()[pidx] << std::endl;
+	// std::cout << _render->pheromone().data[pidx] << std::endl;
 	// printf("%f and %f\n", _brain.output(0), std::tanh(_brain.output(0))*M_PI/8);
 	// std::cout << _dir << std::endl;
 
@@ -121,6 +120,11 @@ float Ant::getAngle() const
 float Ant::E() const
 {
 	return _E;
+}
+
+float Ant::fullness() const
+{
+	return _E/_stomach_equil;
 }
 
 bool Ant::alive() const

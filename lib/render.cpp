@@ -2,14 +2,12 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 09:52:59
+* @Last Modified time: 2021-05-27 15:03:49
 */
 
 #include <iostream>
 #include "render.hpp"
 #include <SFML/OpenGL.hpp>
-
-const int NEIGHBORS[] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
 // 1800 = 60 seconds worth of energy
 
 void DrawableImg::loadImg() {
@@ -18,6 +16,7 @@ void DrawableImg::loadImg() {
 	{
 		for (int j = 0; j < _W; j++)
 		{
+			// _img.setPixel(j, i, sf::Color(255,255,255,active[i*_W+j]*255));
 			_img.setPixel(j, i, utils::HS_vec_to_RGBA(data[i*_W+j], _opacity));
 			// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
 			// printf("test\n");
@@ -54,6 +53,9 @@ void Render::populateRandom(int mincount, int maxcount)
 
 void Render::render()
 {
+	sf::Vector2f offset(D-A,S-W);
+	updateView(offset);
+
 	_world.clear();
 
 	// printf("test\n");
@@ -71,29 +73,56 @@ void Render::render()
 
 void Render::tick() //tick all hills and conversely all ants
 {
-	std::swap(_pheromone.dataOld, _pheromone.data);
+
+	// int ACTIVE_COUNT = 0;
+	// recalculate global E
+	_E = 0;
+	_pheromone.data.swap(_pheromone.dataOld);
+	_pheromone.active.swap(_pheromone.activeOld);
 	for(int i = 0; i < _bounds.height; i++)
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
-			_pheromone.data[i*_bounds.width+j] = _pheromone.dataOld[i*_bounds.width+j]*0.995f;
-			// for (int k = 0; k < 8; k++) {
-			// 	_pheromone.data[i*_bounds.width+j] += _pheromone.dataOld[arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(i+NEIGHBORS[2*k], _bounds.width)]*0.1f;
-			// }
+			int idx = i*_bounds.width+j;
+			_E += utils::math::mag(_food.data[idx]);
+
+			_pheromone.data[idx] = sf::Vector2f(0,0);
+			_pheromone.active[idx] = 0;
+			if (_pheromone.activeOld[idx])
+			{
+				if (utils::math::magsq(_pheromone.dataOld[idx]) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
+					// ACTIVE_COUNT++;
+					_pheromone.active[idx] = 1;
+					_pheromone.data[idx] = _pheromone.dataOld[idx]*(1.f-DECAY_RATE);
+					
+					sf::Vector2f mn = _pheromone.dataOld[idx]*DECAY_RATE/8.f;
+
+					// loop through neighbours and spread pheromone if above cutoff
+					if (utils::math::magsq(mn) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
+						for (int k = 0; k < 8; k++) {
+							int nidx = arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(j+NEIGHBORS[2*k], _bounds.width);
+							_pheromone.data[nidx] += mn;
+							_pheromone.active[nidx] = 1;
+						}
+					}
+				}
+			}
 		}
 	}
+
+	// printf("%d out of %d active; deactivated %d\n", ACTIVE_COUNT, _bounds.width*_bounds.height, DEACTIVATED_COUNT);
 
 	// printf("%lf, %lf\n", E(), _E);
 
 	// printf("test\n");
-	int c = std::min((int) ((_TE-E()) / FOOD_CONVERSION), 5000);
-	_E += c*FOOD_CONVERSION;
+	int c = utils::rand::urand(0,std::min((int) ((_TE-E()) / FOOD_CONVERSION), 10000));
+	// _E += c*FOOD_CONVERSION;
 	// printf("%lf %lf\n", c*FOOD_CONVERSION, (_TE-E()) / FOOD_CONVERSION);
 	// printf("ADDING %d food\n", c);
 	for (int i = 0; i < c; i++) {
 		int idx = utils::rand::urand(_bounds.top, _bounds.height)*_bounds.width + utils::rand::urand(_bounds.left, _bounds.width);
 		// int idx = _bounds.width*_bounds.height/2;
-		_food.data[idx] = utils::math::polar2Cartesian(2*M_PI/3, std::sqrt(utils::math::magsq(_food.data[idx]))+1);
+		_food.data[idx] = utils::math::polar2Cartesian(2*M_PI/3, utils::math::mag(_food.data[idx])+1);
 	}
 	// printf("%lf, %lf\n", E(), _E);
 
@@ -106,9 +135,6 @@ void Render::tick() //tick all hills and conversely all ants
 				return a.antCount() == 0;
 			}
 		), hills.end());
-
-	sf::Vector2f offset(D-A,S-W);
-	updateView(offset);
 }
 
 sf::Sprite Render::getDrawn() const
@@ -160,12 +186,12 @@ sf::RenderTexture* Render::world()
 	return &_world;
 }
 
-std::vector<sf::Vector2f>& Render::pheromone()
+DrawableImg& Render::pheromone()
 {
-	return _pheromone.data;
+	return _pheromone;
 }
 
-std::vector<sf::Vector2f>& Render::food()
+DrawableImg& Render::food()
 {
-	return _food.data;
+	return _food;
 }

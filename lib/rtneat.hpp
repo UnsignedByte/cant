@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 09:42:15
+* @Last Modified time: 2021-05-27 11:11:09
 */
 
 #pragma once
@@ -17,7 +17,7 @@
 struct Ant;
 
 //max distance ants can see or smell
-const float MAX_SIGHT = 3;
+const float MAX_SIGHT = 6;
 
 const int OUTPUT_NODE_COUNT = 3;
 

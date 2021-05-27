@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 09:55:20
+* @Last Modified time: 2021-05-27 10:05:39
 */
 #include "hill.hpp"
 #include "render.hpp"
@@ -99,8 +99,8 @@ void Hill::setRender(Render* r)
 	_render = r;
 }
 
-void Hill::addAnt(const Network brain, bool force) {
-	if (_E-_reserve > _ant_allocated*!force)
+void Hill::addAnt(const Network brain) {
+	if (_E > _ant_allocated)
 	{
 		_ants.push_back(Ant(_pos, _ant_allocated, MAX_STOMACH_SIZE, brain, _render, this));
 		_E-=_ant_allocated;

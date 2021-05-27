@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 09:42:31
+* @Last Modified time: 2021-05-27 13:30:28
 */
 
 #include <stdexcept>
@@ -29,7 +29,7 @@ namespace nUtils {
 
 	ArgParams RANDOM_PARAMS() {
 		ArgParams p;
-		p.type = utils::rand::urand(0,4);
+		p.type = utils::rand::urand(0,5);
 		switch(p.type) {
 			case 0:
 				p.offsetDir = utils::rand::norm();
@@ -42,9 +42,12 @@ namespace nUtils {
 				p.matchDir = utils::rand::rand_01()*M_PI*2;
 			case 2:
 			case 4:
-				p.offsetDir = utils::rand::rand_01()*M_PI*2-M_PI;
+				p.offsetDir = (utils::rand::rand_01()-0.5f)*2*M_PI/4;
 				p.offsetMag = utils::rand::rand_01()*MAX_SIGHT;
 				// printf("Creating parameter type %d with offset (%f, %f) and match %f\n", p.type, p.offsetDir, p.offsetMag, p.matchDir);
+				break;
+			case 5:
+				// parameter dictating fullness of ant (E / equilibrium E)
 				break;
 		}
 		return p;
@@ -86,9 +89,9 @@ float Network::parseArg(int i, Ant* a) const
 			sf::IntRect bounds = a->render()->bounds();
 
 			//Color vector at point
-			sf::Vector2f col = a->render()->pheromone()[idx];
+			sf::Vector2f col = a->render()->pheromone().data[idx];
 			if (_argparams[i].type == 2)
-				return utils::math::magsq(col);
+				return std::tanh(utils::math::magsq(col));
 			else {
 				// circular radian difference between two angles, normalized to (-1,1).
 				float d = arfmod(std::atan2(col.y, col.x)-_argparams[i].matchDir, M_PI*2);
@@ -102,8 +105,10 @@ float Network::parseArg(int i, Ant* a) const
 		{
 			// return 0;
 			//return magnitude squared of color vector at point
-			return utils::math::magsq(a->render()->food()[idx]);
+			return std::tanh(utils::math::magsq(a->render()->food().data[idx]));
 		}
+		case 5:
+			return a->fullness();
 	}
 	return 0;
 }

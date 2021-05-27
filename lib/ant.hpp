@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:20:16
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 09:43:52
+* @Last Modified time: 2021-05-27 11:05:57
 */
 #pragma once
 #include <iostream>
@@ -15,6 +15,8 @@ struct Render;
 struct Hill;
 
 const int AGE = 9000; // lifespan of ant in frames
+
+const float ANT_SIZE = 3.f;
 
 /**
  * Ant class, contains a position and direction
@@ -46,6 +48,7 @@ public:
 	void tick();
 
 	float E() const;
+	float fullness() const;
 	float setE();
 
 	bool alive() const;

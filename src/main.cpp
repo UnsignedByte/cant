@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 09:44:19
+* @Last Modified time: 2021-05-27 15:12:27
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -33,7 +33,7 @@ int main()
 
 	// window.setActive(1);
 
-	Render renderer(WIDTH, HEIGHT, 5e6);
+	Render renderer(WIDTH, HEIGHT, 5*WIDTH*HEIGHT);
 
 	// for(int i = 0; i < 50; i++) {
 	// 	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 50, 200, 1000000, &renderer));

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 01:00:36
+* @Last Modified time: 2021-05-27 15:07:51
 */
 
 #pragma once
@@ -11,8 +11,13 @@
 #include <stdexcept>
 #include <SFML/OpenGL.hpp>
 
-const float FOOD_CONVERSION = 1;
-const float FOOD_OPACITY = 0.05;
+const float FOOD_CONVERSION = 1.f;
+const float FOOD_OPACITY = 0.3f;
+const float PHEROMONE_OPACITY = 5.f;
+
+const int NEIGHBORS[] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
+const float DECAY_RATE = 0.01f;
+const float DEACTIVATE_MAG = 0.001;
 
 struct DrawableImg {
 	DrawableImg() = default;
@@ -22,6 +27,8 @@ struct DrawableImg {
 		_texture.create(_W, _H);
 		data.resize(WIDTH*HEIGHT);
 		dataOld.resize(WIDTH*HEIGHT);
+		active.resize(WIDTH*HEIGHT,0);
+		activeOld.resize(WIDTH*HEIGHT,0);
 	}
 
 	void loadImg();
@@ -31,6 +38,8 @@ struct DrawableImg {
 
 	std::vector<sf::Vector2f> data;
 	std::vector<sf::Vector2f> dataOld;
+	std::vector<bool> active;
+	std::vector<bool> activeOld;
 private:
 	int _W, _H;
 	float _opacity;
@@ -45,7 +54,7 @@ public:
 	bool W=0, A=0, S=0, D=0;
 	Render() = default;
 
-	Render(int WIDTH, int HEIGHT, int E): _view(0, 0, WIDTH, HEIGHT), _bounds(0, 0, WIDTH, HEIGHT), _TE(E)
+	Render(int WIDTH, int HEIGHT, float E): _view(0, 0, WIDTH, HEIGHT), _bounds(0, 0, WIDTH, HEIGHT), _TE(E)
 	{
 		if (!_world.create(WIDTH, HEIGHT))
 		{
@@ -55,8 +64,8 @@ public:
 		_world.setRepeated(true);
 
 		// create empty pheromone image
-		_pheromone = DrawableImg(WIDTH, HEIGHT);
-		_food = DrawableImg(WIDTH, HEIGHT, FOOD_OPACITY);
+		_pheromone = DrawableImg(WIDTH, HEIGHT, PHEROMONE_OPACITY);
+		_food = DrawableImg(WIDTH, HEIGHT, FOOD_OPACITY*(WIDTH*HEIGHT)/_TE);
 
 		// sf::Texture::bind(&_world.getTexture());
 
@@ -80,8 +89,8 @@ public:
 	int height() const;
 
 	float E() const;
-	std::vector<sf::Vector2f>& pheromone();
-	std::vector<sf::Vector2f>& food();
+	DrawableImg& pheromone();
+	DrawableImg& food();
 
 	sf::IntRect bounds() const;
 
