@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 00:23:09
+* @Last Modified time: 2021-05-27 09:54:44
 */
 
 #pragma once
@@ -15,7 +15,9 @@ struct Render;
 const float HILL_SIZE = 5.f;
 const float MAX_STOMACH_SIZE = 2400;
 // chance to create new ant based off current one;
-const float BIRTH_CHANCE = 0.0;
+const float BIRTH_CHANCE = 0.05;
+// number of ants at hill creation
+const int INITIAL_ANTS = 5;
 
 struct Hill
 {
@@ -23,9 +25,9 @@ public:
 	Hill() = default;
 	Hill(float x, float y, float E, float aa, float r, Render* rt, Network brain): _pos(x,y), _render(rt), _E(E), _ant_allocated(aa), _reserve(r)
 	{
-		// all hills will start with 5 ants
-		for (int i = 0; i < 5; i++) {
-			addAnt(brain);
+		// _ant_allocated = 0.01;
+		for (int i = 0; i < INITIAL_ANTS; i++) {
+			addAnt(brain, 1);
 		}
 	}
 
@@ -35,7 +37,7 @@ public:
 	}
 
 	void tick();
-	void addAnt(Network brain);
+	void addAnt(const Network brain, bool force = 0);
 
 	int antCount() const;
 

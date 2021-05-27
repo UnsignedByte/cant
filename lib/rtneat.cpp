@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 00:21:53
+* @Last Modified time: 2021-05-27 09:42:31
 */
 
 #include <stdexcept>
@@ -134,12 +134,12 @@ void Network::propogate()
 	{
 		for (int j = 0; j < _nodes[i].children.size(); j++)
 		{
-			if (_nodes[i].children[j] > _nodes.size()) {
-				std::cout << *this << std::endl;
-				std::cout << _nodes[i].children << std::endl;
-				printf("%d, %d, %d\n", _nodes[i].children[j], i, j);
-				throw std::runtime_error("Fucked");
-			}
+			// if (_nodes[i].children[j] > _nodes.size()) {
+			// 	std::cout << *this << std::endl;
+			// 	std::cout << _nodes[i].children << std::endl;
+			// 	printf("%d, %d, %d\n", _nodes[i].children[j], i, j);
+			// 	throw std::runtime_error("Fucked");
+			// }
 			_nodes[_nodes[i].children[j]].state += _states[i]*_nodes[i].weights[j] + _nodes[i].bias;
 			// printf("Propogating to child %d with state %f\n", C, _states[i] + _nodes[C].state);
 		}
@@ -178,6 +178,7 @@ std::ostream& operator<<(std::ostream &os, const Network& n) {
 		os << "TYPE: " << n._argparams[i].type << " with params offsetDir: " << n._argparams[i].offsetDir << " offsetMag: " << n._argparams[i].offsetMag  << " matchDir: " << n._argparams[i].matchDir << "\n";
 		os << "NODE has bias " << n._inputs[i].bias << " and is at state " << n._inputs[i].state << " and the following children:\n";
 		for (int j = 0; j < n._inputs[i].children.size(); j++) {
+			// os << "Weights length " <<  n._inputs[i].weights.size() << ", children length " << n._inputs[i].children.size() << "\n";
 			os << "\tCHILD " << n._inputs[i].children[j] << " with weight " << n._inputs[i].weights[j] << "\n";
 		}
 	}

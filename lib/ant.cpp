@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 00:19:16
+* @Last Modified time: 2021-05-27 09:41:42
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -34,7 +34,7 @@ void Ant::tick()
 	// std::cout << _pos << std::endl;
 
 	//current amount of food
-	float currFood = std::sqrt(utils::math::magsq(_render->food()[pidx]));
+	float currFood = utils::math::mag(_render->food()[pidx]);
 	// eat food at tile
 	float eatVal = std::min(currFood*FOOD_CONVERSION, _stomach_size-_E);
 	// if (eatVal > 0) {
@@ -42,11 +42,11 @@ void Ant::tick()
 	// 	printf("%d: %f %f\n", pidx, utils::math::magsq(_render->food()[pidx]), eatVal);
 	// }
 
-	_E += eatVal;
+	// _E += eatVal;
 	// remove this food from the screen
-	_render->food()[pidx] = utils::math::polar2Cartesian(2*M_PI/3, currFood-eatVal/FOOD_CONVERSION);
+	// _render->food()[pidx] = utils::math::polar2Cartesian(2*M_PI/3, currFood-eatVal/FOOD_CONVERSION);
 	// remove this food from global energy use
-	_render->_E -= eatVal;
+	// _render->_E -= eatVal;
 
 	// drop pheromone at tile
 	_render->pheromone()[pidx] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
@@ -142,5 +142,6 @@ Render* Ant::render()
 
 Network Ant::brain() const
 {
+	// std::cout << _brain << std::endl;
 	return _brain;
 }

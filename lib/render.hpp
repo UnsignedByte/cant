@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 22:48:08
+* @Last Modified time: 2021-05-27 01:00:36
 */
 
 #pragma once
@@ -11,12 +11,13 @@
 #include <stdexcept>
 #include <SFML/OpenGL.hpp>
 
-const float FOOD_CONVERSION = 100;
+const float FOOD_CONVERSION = 1;
+const float FOOD_OPACITY = 0.05;
 
 struct DrawableImg {
 	DrawableImg() = default;
 
-	DrawableImg(int WIDTH, int HEIGHT): _W(WIDTH), _H(HEIGHT) {
+	DrawableImg(int WIDTH, int HEIGHT, float opacity = 1): _W(WIDTH), _H(HEIGHT), _opacity(opacity) {
 		_img.create(_W, _H);
 		_texture.create(_W, _H);
 		data.resize(WIDTH*HEIGHT);
@@ -32,6 +33,7 @@ struct DrawableImg {
 	std::vector<sf::Vector2f> dataOld;
 private:
 	int _W, _H;
+	float _opacity;
 	sf::Sprite _sprite;
 	sf::Texture _texture;
 	sf::Image _img;
@@ -54,7 +56,7 @@ public:
 
 		// create empty pheromone image
 		_pheromone = DrawableImg(WIDTH, HEIGHT);
-		_food = DrawableImg(WIDTH, HEIGHT);
+		_food = DrawableImg(WIDTH, HEIGHT, FOOD_OPACITY);
 
 		// sf::Texture::bind(&_world.getTexture());
 

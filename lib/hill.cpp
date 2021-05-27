@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 23:18:58
+* @Last Modified time: 2021-05-27 09:55:20
 */
 #include "hill.hpp"
 #include "render.hpp"
@@ -52,12 +52,23 @@ void Hill::render() const
 //returns true if hill has died (no energy)
 void Hill::tick() //calculate movements for all ants in hill
 {
+	// make sure there are ants in hill before we do anything
+	if (antCount() == 0) return;
+
 	//replenish energy of ants
-	for(int i = 0; i < _ants.size(); i++) {
+	for(int i = 0; i < antCount(); i++) {
 		// IF within hill, transfer energy
 		if (utils::math::dstsq(_pos, _ants[i].getPos()) < HILL_SIZE*HILL_SIZE) {
 			_E-= _ants[i].setE();
 		}
+	}
+
+	// IF chance passed, create a new ant
+	// std::cout << "TOTAL POP: "<< antCount() << std::endl;
+	if (utils::rand::rand_01() < BIRTH_CHANCE) {
+		int i = utils::rand::urand(0,antCount());
+		// std::cout << "CREATING NEW ANT FROM SOURCE ID "<< i << " out of " << antCount() << std::endl;
+		addAnt(_ants[i].brain());
 	}
 
 	// std::cout << _render << std::endl;
@@ -71,14 +82,6 @@ void Hill::tick() //calculate movements for all ants in hill
 				return !a.alive();
 			}
 		), _ants.end());
-
-	//replenish energy of ants
-	for(int i = 0; i < _ants.size(); i++) {
-		// IF chance passed and the ant is within the range, create a new ant
-		if (utils::math::dstsq(_pos, _ants[i].getPos()) < HILL_SIZE*HILL_SIZE && utils::rand::rand_01() < BIRTH_CHANCE) {
-			addAnt(_ants[i].brain());
-		}
-	}
 }
 
 float Hill::E() const
@@ -96,11 +99,14 @@ void Hill::setRender(Render* r)
 	_render = r;
 }
 
-void Hill::addAnt(Network brain) {
-	if (_E-_reserve > _ant_allocated)
+void Hill::addAnt(const Network brain, bool force) {
+	if (_E-_reserve > _ant_allocated*!force)
 	{
 		_ants.push_back(Ant(_pos, _ant_allocated, MAX_STOMACH_SIZE, brain, _render, this));
 		_E-=_ant_allocated;
-		Ant::mutate(_ants.back());
+		_ants.back().mutate();
 	}
+	//  else {
+	// 	printf("FAILED CREATING ANT DUE TO LACK OF E\n");
+	// }
 }

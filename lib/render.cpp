@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 23:20:26
+* @Last Modified time: 2021-05-27 09:52:59
 */
 
 #include <iostream>
@@ -18,7 +18,7 @@ void DrawableImg::loadImg() {
 	{
 		for (int j = 0; j < _W; j++)
 		{
-			_img.setPixel(j, i, utils::HS_vec_to_RGBA(data[i*_W+j]));
+			_img.setPixel(j, i, utils::HS_vec_to_RGBA(data[i*_W+j], _opacity));
 			// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
 			// printf("test\n");
 		}
@@ -46,7 +46,7 @@ void Render::populateRandom(int mincount, int maxcount)
 {
 	int count = utils::rand::urand(mincount, maxcount);
 
-	// uses 10% of the energy to create anthills
+	// uses some of the energy to create anthills
 	for (int i = 0; i < count; i++) {
 		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, _TE/2/count, this));
 	}
@@ -97,7 +97,7 @@ void Render::tick() //tick all hills and conversely all ants
 	}
 	// printf("%lf, %lf\n", E(), _E);
 
-	// remove ants if tick() returns true, aka if ant is out of energy
+	// remove hill if out of ants
 	hills.erase(
 		std::remove_if(hills.begin(), hills.end(),
 			[](Hill& a)

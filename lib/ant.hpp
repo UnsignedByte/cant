@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:20:16
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 23:38:35
+* @Last Modified time: 2021-05-27 09:43:52
 */
 #pragma once
 #include <iostream>
@@ -14,7 +14,7 @@
 struct Render;
 struct Hill;
 
-const int AGE = 1800; // an ant has an age of 1800
+const int AGE = 9000; // lifespan of ant in frames
 
 /**
  * Ant class, contains a position and direction
@@ -26,6 +26,7 @@ public:
 
 	Ant(float x, float y, float dir, float se, float ss, Network brain, Render* rt, Hill* hill): _pos(x,y), _dir(dir), _brain(brain), _render(rt), _E(se), _hill(hill), _stomach_size(ss), _stomach_equil(se)
 	{
+		// std::cout << "CREATED: " << this->_brain << std::endl;
 	}
 
 	// ant with random angle
@@ -37,9 +38,9 @@ public:
 	{
 	}
 
-	static void mutate(Ant& a) {
-		Network::mutate(a._brain);
-		nUtils::RANDOM_MUTATE(a._stomach_equil, false, a._stomach_size);
+	void mutate() {
+		_brain.mutate();
+		nUtils::RANDOM_MUTATE(_stomach_equil, false, _stomach_size);
 	}
 
 	void tick();

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 23:43:14
+* @Last Modified time: 2021-05-27 00:36:06
 */
 #pragma once
 
@@ -69,13 +69,15 @@ namespace utils {
 
 		float magsq(const float, const float);
 		float magsq(const sf::Vector2f);
+		float mag(const float, const float);
+		float mag(const sf::Vector2f);
 		float dstsq(const sf::Vector2f, const sf::Vector2f);
 	}
 
 	/**
 	 * Convert a vector <hue, saturation> to an sf::Color
 	 */
-	sf::Color HS_vec_to_RGBA(sf::Vector2f hs_vec);
+	sf::Color HS_vec_to_RGBA(sf::Vector2f hs_vec, float opacity = 1);
 }
 
 template<typename T>
