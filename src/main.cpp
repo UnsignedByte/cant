@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 10:53:25
+* @Last Modified time: 2021-05-26 17:06:53
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -32,13 +32,13 @@ int main()
 
 	// window.setActive(1);
 
-	Render renderer(WIDTH, HEIGHT, 1e9);
+	Render renderer(WIDTH, HEIGHT, 2e6);
 
 	// for(int i = 0; i < 50; i++) {
 	// 	renderer.addHill(Hill::randomHill(WIDTH, HEIGHT, 50, 200, 1000000, &renderer));
 	// }
 	// renderer.populateRandom(1,1,1,1);
-	renderer.populateRandom(10, 50, 50, 200);
+	renderer.populateRandom(20, 30, 50, 100);
 
 	// window.setFramerateLimit(60);
 	while (window.isOpen())

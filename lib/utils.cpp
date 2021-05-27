@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 11:16:03
+* @Last Modified time: 2021-05-26 18:06:35
 */
 #include <random>
 #include <cassert>
@@ -27,7 +27,7 @@ namespace utils {
 		}
 
 		// seed with 0 (for testing)
-		// std::seed_seq seed = {0};
+		// std::seed_seq seed = {7};
 		// std::mt19937 random_engine(seed);
 
 		std::mt19937 random_engine = ProperlySeededRandomEngine();
@@ -96,12 +96,21 @@ namespace utils {
 			return {std::cos(_angle), std::sin(_angle)};
 		}
 
-		sf::Vector2f polar2Cartesian(const float dir) {
-			return {std::cos(dir), std::sin(dir)};
+		sf::Vector2f polar2Cartesian(const float& dir, const float& mag) {
+			return {std::cos(dir)*mag, std::sin(dir)*mag};
 		}
 
-		sf::Vector2f polar2Cartesian(const float dir, const float mag) {
-			return polar2Cartesian(dir)*mag;
+		//magnitude of vector squared
+		float magsq(const float& x, const float& y) {
+			return x*x+y*y;
+		}
+
+		float magsq(const sf::Vector2f& v) {
+			return magsq(v.x, v.y);
+		}
+
+		float dstsq(const sf::Vector2f& a, const sf::Vector2f& b) {
+			return magsq(a.x-b.x,a.y-b.y);
 		}
 	}
 
@@ -118,7 +127,7 @@ namespace utils {
 		v = 255;
 
 		// Take magnitude of vector (between 0 and inf) and map it into the range [0, 255]
-		rgba.a = static_cast<uint8_t>(255. * (1 - std::exp(-0.1 * (hs_vec.x * hs_vec.x + hs_vec.y * hs_vec.y))));
+		rgba.a = static_cast<uint8_t>(255. * std::tanh(math::magsq(hs_vec)));
 
 		// Find the hue, region and remainder
 		h = static_cast<unsigned int>(std::atan2(hs_vec.y, hs_vec.x) * 128. / M_PI);

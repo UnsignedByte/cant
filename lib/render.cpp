@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 21:03:09
+* @Last Modified time: 2021-05-26 18:57:06
 */
 
 #include <iostream>
@@ -10,6 +10,7 @@
 #include <SFML/OpenGL.hpp>
 
 const int NEIGHBORS[] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
+// 1800 = 60 seconds worth of energy
 
 void DrawableImg::loadImg() {
 	//update image with new colors
@@ -45,8 +46,9 @@ void Render::populateRandom(int mincount, int maxcount, int antmin, int antmax)
 {
 	int count = utils::rand::urand(mincount, maxcount);
 
+	// uses 10% of the energy to create anthills
 	for (int i = 0; i < count; i++) {
-		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, antmin, antmax, _TE/2/count, this));
+		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, antmin, antmax, _TE/count, this));
 	}
 }
 
@@ -56,6 +58,7 @@ void Render::render()
 
 	// printf("test\n");
 
+	_world.draw(_food.sprite());
 	_world.draw(_pheromone.sprite());
 
 	// printf("test\n");
@@ -80,7 +83,19 @@ void Render::tick() //tick all hills and conversely all ants
 		}
 	}
 
+	// printf("%lf, %lf\n", E(), _E);
+
 	// printf("test\n");
+	int c = std::min((int) ((_TE-E()) / FOOD_CONVERSION), 5000);
+	_E += c*FOOD_CONVERSION;
+	// printf("%lf %lf\n", c*FOOD_CONVERSION, (_TE-E()) / FOOD_CONVERSION);
+	// printf("ADDING %d food\n", c);
+	for (int i = 0; i < c; i++) {
+		int idx = utils::rand::urand(_bounds.top, _bounds.height)*_bounds.width + utils::rand::urand(_bounds.left, _bounds.width);
+		// int idx = _bounds.width*_bounds.height/2;
+		_food.data[idx] = utils::math::polar2Cartesian(2*M_PI/3, std::sqrt(utils::math::magsq(_food.data[idx]))+1);
+	}
+	// printf("%lf, %lf\n", E(), _E);
 
 	// remove ants if tick() returns true, aka if ant is out of energy
 	hills.erase(
@@ -88,7 +103,7 @@ void Render::tick() //tick all hills and conversely all ants
 			[](Hill& a)
 			{
 				a.tick();
-				return a.E() <= 0;
+				return a.antCount() == 0;
 			}
 		), hills.end());
 
@@ -130,9 +145,9 @@ sf::IntRect Render::bounds() const
 	return _bounds;
 }
 
-int Render::E() const
+float Render::E() const
 {
-	int TE = _E;
+	float TE = _E;
 	for(const Hill& h : hills)
 	{
 		TE += h.E();
@@ -148,4 +163,9 @@ sf::RenderTexture* Render::world()
 std::vector<sf::Vector2f>& Render::pheromone()
 {
 	return _pheromone.data;
+}
+
+std::vector<sf::Vector2f>& Render::food()
+{
+	return _food.data;
 }

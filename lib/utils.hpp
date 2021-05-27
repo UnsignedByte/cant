@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 23:56:37
+* @Last Modified time: 2021-05-26 15:02:44
 */
 #pragma once
 
@@ -64,8 +64,11 @@ namespace utils {
 			float _angle;
 		};
 
-		sf::Vector2f polar2Cartesian(const float);
-		sf::Vector2f polar2Cartesian(const float, const float);
+		sf::Vector2f polar2Cartesian(const float&, const float& = 1);
+
+		float magsq(const float&, const float&);
+		float magsq(const sf::Vector2f&);
+		float dstsq(const sf::Vector2f&, const sf::Vector2f&);
 	}
 
 	/**

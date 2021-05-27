@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-13 23:38:32
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 12:36:30
+* @Last Modified time: 2021-05-26 17:02:02
 */
 #include "hill.hpp"
 #include "render.hpp"
@@ -51,6 +51,14 @@ void Hill::render() const
 //returns true if hill has died (no energy)
 void Hill::tick() //calculate movements for all ants in hill
 {
+	//replenish energy of ants
+	for(int i = 0; i < _ants.size(); i++) {
+		// IF within hill, transfer energy
+		if (utils::math::dstsq(_pos, _ants[i].getPos()) < HILL_SIZE*HILL_SIZE) {
+			_E-= _ants[i].setE(_E);
+		}
+	}
+
 	// std::cout << _render << std::endl;
 	// remove ants if tick() returns true, aka if ant is out of energy
 	_ants.erase(
@@ -64,9 +72,9 @@ void Hill::tick() //calculate movements for all ants in hill
 		), _ants.end());
 }
 
-int Hill::E() const
+float Hill::E() const
 {
-	int TE = _E;
+	float TE = _E;
 	for (const Ant& a : _ants)
 	{
 		TE+=a.E();

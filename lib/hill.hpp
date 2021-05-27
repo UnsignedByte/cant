@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 19:07:31
+* @Last Modified time: 2021-05-26 17:01:47
 */
 
 #pragma once
@@ -16,13 +16,13 @@ struct Hill
 {
 public:
 	Hill() = default;
-	Hill(float x, float y, int antCount, int E, Render* rt, Network brain): _pos(x,y), _render(rt), _E(E), _brain(brain)
+	Hill(float x, float y, int antCount, float E, Render* rt, Network brain): _pos(x,y), _render(rt), _E(E), _brain(brain)
 	{
-		int AllocatedE = _E/antCount;
+		float AllocatedE = _E/antCount;
 		for (int i = 0; i < antCount; i++)
 		{
-			_ants.push_back(Ant(_pos, AllocatedE, Network::mutate(_brain), _render, this));
-			_E -= _ants[i].E();
+			_ants.push_back(Ant(_pos, AllocatedE/2, AllocatedE, _brain, _render, this));
+			Ant::mutate(_ants.back());
 		}
 	}
 
@@ -40,16 +40,15 @@ public:
 
 	int antCount() const;
 
-	int E() const;
+	float E() const;
 
 	void render() const;
 	void setRender(Render* r);
 
 private:
 	std::vector<Ant> _ants; // list of ants
-	int _food; // food held in colony
 	sf::Vector2f _pos;
 	Render* _render;
 	Network _brain;
-	int _E;
+	float _E;
 };

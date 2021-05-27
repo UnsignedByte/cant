@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 11:08:24
+* @Last Modified time: 2021-05-26 17:23:18
 */
 
 #include <stdexcept>
@@ -12,13 +12,13 @@
 #include "render.hpp"
 
 namespace nUtils {
-	void RANDOM_MUTATE(float& f) {
+	void RANDOM_MUTATE(float& f, bool allowFlip) {
 		if (utils::rand::rand_01() < MUTATE_VALUE) {
 			if (utils::rand::rand_01() < MUTATE_RESET)
 			{
 				f = utils::rand::norm();
 			} else {
-				if (utils::rand::rand_01() < MUTATE_FLIP)
+				if (allowFlip && utils::rand::rand_01() < MUTATE_FLIP)
 					f *= -1;
 
 				f *= (std::tanh(utils::rand::norm())/10+1);
@@ -40,8 +40,9 @@ namespace nUtils {
 			case 3:
 				p.matchDir = utils::rand::rand_01()*M_PI*2;
 			case 2:
+			case 4:
 				p.offsetDir = utils::rand::rand_01()*M_PI*2-M_PI;
-				p.offsetMag = utils::rand::norm();
+				p.offsetMag = utils::rand::rand_01()*MAX_SIGHT;
 				// printf("Creating parameter type %d with offset (%f, %f) and match %f\n", p.type, p.offsetDir, p.offsetMag, p.matchDir);
 				break;
 		}
@@ -67,6 +68,10 @@ namespace nUtils {
 
 float Network::parseArg(int i, Ant* a) const
 {
+	sf::Vector2f offsetPos = a->getPos()+utils::math::polar2Cartesian(a->getAngle().getAngle()+_argparams[i].offsetDir, _argparams[i].offsetMag);
+	int W = a->render()->bounds().width;
+	int H = a->render()->bounds().height;
+	int idx = arimod((int)offsetPos.y, H) * W + arimod((int) offsetPos.x, W);
 	switch(_argparams[i].type) {
 		case 0: // return a defined constant
 			return _argparams[i].offsetDir;
@@ -74,13 +79,13 @@ float Network::parseArg(int i, Ant* a) const
 			return utils::rand::rand_01()*2-1;
 		case 2: // PHERMONE INTENSITY (squared) at offset
 		case 3: // PHERMONE Activation by color
-			sf::Vector2f offsetPos = a->getPos()+utils::math::polar2Cartesian(a->getAngle().getAngle()+_argparams[i].offsetDir, _argparams[i].offsetMag);
+		{
 			sf::IntRect bounds = a->render()->bounds();
 
 			//Color vector at point
-			sf::Vector2f col = a->render()->pheromone()[arimod((int)offsetPos.y, bounds.height) * bounds.width + arimod((int) offsetPos.x, bounds.width)];
+			sf::Vector2f col = a->render()->pheromone()[idx];
 			if (_argparams[i].type == 1)
-				return col.x*col.x+col.y*col.y;
+				return utils::math::magsq(col);
 			else {
 				// circular radian difference between two angles, normalized to (-1,1).
 				float d = arfmod(d-_argparams[i].matchDir, M_PI*2);
@@ -88,6 +93,12 @@ float Network::parseArg(int i, Ant* a) const
 				// square to emphasize values near 1
 				return d*d;
 			}
+		}
+		case 4: // FOOD amount at offset
+		{
+			//return magnitude squared of color vector at point
+			return utils::math::magsq(a->render()->food()[idx]);
+		}
 	}
 	return 0;
 }

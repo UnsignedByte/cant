@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-25 23:08:08
+* @Last Modified time: 2021-05-26 17:03:41
 */
 
 #pragma once
@@ -10,6 +10,8 @@
 #include "hill.hpp"
 #include <stdexcept>
 #include <SFML/OpenGL.hpp>
+
+const float FOOD_CONVERSION = 100;
 
 struct DrawableImg {
 	DrawableImg() = default;
@@ -75,8 +77,9 @@ public:
 	int width() const;
 	int height() const;
 
-	int E() const;
+	float E() const;
 	std::vector<sf::Vector2f>& pheromone();
+	std::vector<sf::Vector2f>& food();
 
 	sf::IntRect bounds() const;
 
@@ -85,12 +88,12 @@ public:
 	sf::RenderTexture* world();
 
 	std::vector<Hill> hills;
+	float _E = 0;
 private:
 	sf::FloatRect _view;
 	const sf::IntRect _bounds;
 	DrawableImg _pheromone;
 	DrawableImg _food;
 	sf::RenderTexture _world;
-	int _E;
-	const int _TE;
+	const float _TE;
 };

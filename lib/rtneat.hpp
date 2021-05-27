@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-26 11:14:33
+* @Last Modified time: 2021-05-26 18:51:13
 */
 
 #pragma once
@@ -15,8 +15,13 @@
 
 struct Ant;
 
-const float INITIAL_INPUT_CHANCE = 0.7;
-const float INITIAL_NODE_CHANCE = 0.8;
+//max distance ants can see or smell
+const float MAX_SIGHT = 3;
+
+const int OUTPUT_NODE_COUNT = 3;
+
+const float INITIAL_INPUT_CHANCE = 0.9;
+const float INITIAL_NODE_CHANCE = 0.95;
 const float INITIAL_CHILD_CHANCE = 0.6;
 
 const float REMOVE_CHILD_CHANCE = 0.05;
@@ -48,7 +53,7 @@ namespace nUtils {
 		float matchDir = 0;
 	};
 
-	void RANDOM_MUTATE(float& f);
+	void RANDOM_MUTATE(float& f, bool allowFlip = true);
 
 	ArgParams RANDOM_PARAMS();
 
@@ -71,7 +76,7 @@ public:
 		_nodes.resize(nodes.size()+ocount);
 	}
 
-	static Network mutate(Network n)
+	static void mutate(Network& n)
 	{
 		// std::cout << n << std::endl;
 		int inputCount = utils::rand::binom(50, ADD_INPUT_CHANCE);
@@ -144,8 +149,6 @@ public:
 		// std::cout << n << std::endl;
 
 		n.prune();
-
-		return n;
 	}
 
 	static Network random()
@@ -156,7 +159,7 @@ public:
 		int nodeCount = utils::rand::binom(50, INITIAL_NODE_CHANCE);
 		// int nodeCount = 10;
 
-		Network n(0, 2, std::vector<Node>(nodeCount));
+		Network n(0, OUTPUT_NODE_COUNT, std::vector<Node>(nodeCount));
 
 		for(int i = n._ocount; i < n._nodes.size(); i++) {
 			n._nodes[i] = nUtils::RANDOM_NODE(n._nodes.size());
