@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:54
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 00:36:06
+* @Last Modified time: 2021-05-28 00:21:54
 */
 #pragma once
 
@@ -18,6 +18,7 @@ namespace utils {
 		 * Return a random float in the range [0, 1).
 		 */
 		float rand_01();
+		float rand_theta();
 		float norm();
 		int binom(int, float);
 
@@ -119,4 +120,9 @@ std::ostream& operator<<(std::ostream& os, std::vector<T> matrix)
 		os << matrix[i] << " ";
 	}
 	return os << '\b';
+}
+
+template<typename T>
+sf::Vector2f operator*(const sf::Vector2<T> &a, const sf::Vector2<T> &b) {
+	return sf::Vector2f(a.x*b.x, a.y*b.y);
 }

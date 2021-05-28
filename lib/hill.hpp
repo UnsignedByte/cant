@@ -2,12 +2,13 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 11:18:03
+* @Last Modified time: 2021-05-27 23:29:47
 */
 
 #pragma once
 #include "ant.hpp"
 #include "rtneat.hpp"
+#include <cassert>
 #include <SFML/System.hpp>
 
 struct Render;
@@ -23,18 +24,14 @@ struct Hill
 {
 public:
 	Hill() = default;
-	Hill(float x, float y, float E, float aa, Render* rt, Network brain): _pos(x,y), _render(rt), _E(E), _ant_allocated(aa)
-	{
-		// _ant_allocated = 0.01;
-		for (int i = 0; i < INITIAL_ANTS; i++) {
-			addAnt(brain);
-		}
-	}
+	Hill(float x, float y, float E, float aa, Render* rt, Network brain);
 
 	static Hill randomHill(int boundX, int boundY, int e, Render* rt)
 	{
 		return Hill(utils::rand::rand_01()*boundX, utils::rand::rand_01()*boundY, e, MAX_STOMACH_SIZE/2, rt, Network::random());
 	}
+
+	static Hill clone(const Hill& h, const int e);
 
 	void tick();
 	void addAnt(const Network brain);
@@ -44,11 +41,11 @@ public:
 	float E() const;
 
 	void render() const;
-	void setRender(Render* r);
 
 private:
 	std::vector<Ant> _ants; // list of ants
 	sf::Vector2f _pos;
 	Render* _render;
-	float _E, _ant_allocated;
+	float _E, _ant_allocated, _color;
+	sf::FloatRect _bounds;
 };

@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 15:03:49
+* @Last Modified time: 2021-05-27 23:16:23
 */
 
 #include <iostream>
@@ -16,7 +16,9 @@ void DrawableImg::loadImg() {
 	{
 		for (int j = 0; j < _W; j++)
 		{
+			// DEBUG VIEW: shows whether a pixel is active
 			// _img.setPixel(j, i, sf::Color(255,255,255,active[i*_W+j]*255));
+
 			_img.setPixel(j, i, utils::HS_vec_to_RGBA(data[i*_W+j], _opacity));
 			// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
 			// printf("test\n");
@@ -37,18 +39,21 @@ sf::Sprite& DrawableImg::sprite() {
 
 void Render::addHill(Hill h)
 {
-	h.setRender(this);
 	hills.push_back(h);
 }
 
 void Render::populateRandom(int mincount, int maxcount)
 {
 	int count = utils::rand::urand(mincount, maxcount);
+	_hill_allocated = _TE/2/std::max(10,count);
 
 	// uses some of the energy to create anthills
 	for (int i = 0; i < count; i++) {
-		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, _TE/2/count, this));
+		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, _hill_allocated, this));
 	}
+
+	// fill world using half the remaining energy
+	std::fill(_food.data.begin(), _food.data.end(), utils::math::polar2Cartesian(2*M_PI/3, (_TE-_hill_allocated*count)/2/_bounds.width/_bounds.height/FOOD_CONVERSION));
 }
 
 void Render::render()
@@ -71,7 +76,7 @@ void Render::render()
 	}
 }
 
-void Render::tick() //tick all hills and conversely all ants
+void Render::tick() //tick all hills and then all ants
 {
 
 	// int ACTIVE_COUNT = 0;
@@ -84,6 +89,7 @@ void Render::tick() //tick all hills and conversely all ants
 		for (int j = 0; j < _bounds.width; j++)
 		{
 			int idx = i*_bounds.width+j;
+			_food.data[idx]*=(1-FOOD_DECAY_RATE);
 			_E += utils::math::mag(_food.data[idx]);
 
 			_pheromone.data[idx] = sf::Vector2f(0,0);
@@ -112,17 +118,38 @@ void Render::tick() //tick all hills and conversely all ants
 
 	// printf("%d out of %d active; deactivated %d\n", ACTIVE_COUNT, _bounds.width*_bounds.height, DEACTIVATED_COUNT);
 
-	// printf("%lf, %lf\n", E(), _E);
 
+	if (utils::rand::rand_01() < HILL_BIRTH_CHANCE) {
+		if (hills.size() > 0 && utils::rand::rand_01() > RANDOM_HILL_CHANCE) {
+			addHill(Hill::clone(hills[utils::rand::urand(0,hills.size())], _hill_allocated));
+		} else {
+			addHill(Hill::randomHill(_bounds.width, _bounds.height, _hill_allocated, this));
+		}	
+	}
+
+	float remainingE = std::max(0.f, _TE-E()-_hill_allocated);
+	// printf("%f, %f, %f, %f\n", E(), _E, _TE, remainingE);
 	// printf("test\n");
-	int c = utils::rand::urand(0,std::min((int) ((_TE-E()) / FOOD_CONVERSION), 10000));
+	int c = utils::rand::urand(0,(int) std::min(remainingE , 100.f)/FOOD_CONVERSION);
 	// _E += c*FOOD_CONVERSION;
 	// printf("%lf %lf\n", c*FOOD_CONVERSION, (_TE-E()) / FOOD_CONVERSION);
 	// printf("ADDING %d food\n", c);
 	for (int i = 0; i < c; i++) {
-		int idx = utils::rand::urand(_bounds.top, _bounds.height)*_bounds.width + utils::rand::urand(_bounds.left, _bounds.width);
+		int idx = utils::rand::urand(0, _bounds.height)*_bounds.width + utils::rand::urand(0, _bounds.width);
 		// int idx = _bounds.width*_bounds.height/2;
 		_food.data[idx] = utils::math::polar2Cartesian(2*M_PI/3, utils::math::mag(_food.data[idx])+1);
+	}
+
+	// FOOD SPREADING
+
+	c = (int) _bounds.width*_bounds.height*SPREAD_FOOD_CHANCE;
+	for (int i = 0; i < c; i++) {
+		sf::Vector2f idx(utils::rand::urand(0, _bounds.height), utils::rand::urand(0, _bounds.width));
+		sf::Vector2f offset = arfmod(idx+sf::Vector2f(utils::rand::urand(-3,4), utils::rand::urand(-3,4)), sf::Vector2f(_bounds.width, _bounds.height));
+		int ii = idx.y*_bounds.width+idx.x;
+		int oi = offset.y*_bounds.width+offset.x;
+		// int idx = _bounds.width*_bounds.height/2;
+		_food.data[oi] = utils::math::polar2Cartesian(2*M_PI/3, std::min(MAX_STOMACH_SIZE/FOOD_CONVERSION/16.f, utils::math::mag(_food.data[oi])+std::min(remainingE, 0.5f*utils::math::mag(_food.data[ii]))));
 	}
 	// printf("%lf, %lf\n", E(), _E);
 

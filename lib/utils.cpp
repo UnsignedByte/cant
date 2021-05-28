@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 14:33:00
+* @Last Modified time: 2021-05-27 23:36:54
 */
 #include <random>
 #include <cassert>
@@ -26,7 +26,7 @@ namespace utils {
 	    return T(seeds);
 		}
 
-		// seed with 0 (for testing)
+		// set seed (for testing)
 		// std::seed_seq seed = {1};
 		// std::mt19937 random_engine(seed);
 
@@ -37,6 +37,10 @@ namespace utils {
 
 		float rand_01() {
 			return random_distribution(random_engine);
+		}
+
+		float rand_theta() {
+			return rand_01()*2*M_PI;
 		}
 
 		float norm() {

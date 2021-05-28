@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 15:07:51
+* @Last Modified time: 2021-05-27 22:22:27
 */
 
 #pragma once
@@ -17,7 +17,12 @@ const float PHEROMONE_OPACITY = 5.f;
 
 const int NEIGHBORS[] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
 const float DECAY_RATE = 0.01f;
+const float FOOD_DECAY_RATE = 0.001f;
 const float DEACTIVATE_MAG = 0.001;
+const float HILL_BIRTH_CHANCE = 1.f/900.f;
+const float RANDOM_HILL_CHANCE = 0.01f;
+// chance of a given pixel to spread food
+const float SPREAD_FOOD_CHANCE = 0.01;
 
 struct DrawableImg {
 	DrawableImg() = default;
@@ -106,5 +111,6 @@ private:
 	DrawableImg _pheromone;
 	DrawableImg _food;
 	sf::RenderTexture _world;
+	float _hill_allocated = 0;
 	const float _TE;
 };
