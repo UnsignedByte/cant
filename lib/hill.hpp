@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 14:21:25
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 23:29:47
+* @Last Modified time: 2021-05-28 01:12:28
 */
 
 #pragma once
@@ -18,7 +18,7 @@ const float MAX_STOMACH_SIZE = 1200;
 // chance to create new ant based off current one;
 const float BIRTH_CHANCE = 1;
 // number of ants at hill creation
-const int INITIAL_ANTS = 20;
+const int INITIAL_ANTS = 10;
 
 struct Hill
 {

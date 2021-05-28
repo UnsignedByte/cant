@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-28 00:28:19
+* @Last Modified time: 2021-05-28 01:05:59
 */
 
 #include <stdexcept>
@@ -82,11 +82,20 @@ namespace nUtils {
 		R01 = utils::rand::rand_01();
 	}
 
-	std::vector<int> POINTS_ON_ARC(Ant* a, const float tmin, const float tmax, const float dist) {
+	std::vector<int> POINTS_ON_ARC(Ant* a, const float tmin, const float tmax, const float dist, const float sparsity) {
 		std::vector<int> out;
-		for(int i = 0; i < dist*2; i++) {
-			sf::Vector2f p = arfmod(a->getPos()+utils::math::polar2Cartesian(tmin+(tmax-tmin)*i/dist, dist), sf::Vector2f(a->render()->world()->getSize()));
-			out.push_back((int)p.y*a->render()->bounds().width+(int)p.x);
+
+		sf::Vector2f p;
+		if (dist == 0) {
+			p = a->getPos();
+			out.push_back((int)p.y * a->render()->bounds().width+(int)p.x);
+			return out;
+		}
+
+		for(int i = 0; i < dist*(tmax-tmin)*sparsity*M_PI; i++) {
+			p = arfmod(a->getPos()+utils::math::polar2Cartesian(tmin+i/sparsity/dist/M_PI, dist), sf::Vector2f(a->render()->world()->getSize()));
+			// std::cout << p << std::endl;
+			out.push_back((int)p.y * a->render()->bounds().width+(int)p.x);
 		}
 		return out;
 	}
@@ -96,6 +105,7 @@ float Network::parseArg(const nUtils::ArgParams& p, Ant* a) const
 {
 	// std::cout << a->getAngle() << std::endl;
 	std::vector<int> v = nUtils::POINTS_ON_ARC(a, a->getAngle()-p.DIR1*MAX_SIGHT_RANGE, a->getAngle()+p.DIR1*MAX_SIGHT_RANGE, p.R01*MAX_SIGHT);
+	// std::cout << v << std::endl;
 	// sf::Vector2f offsetPos = a->getPos()+utils::math::polar2Cartesian(a->getAngle()+_argparams[i].a, _argparams[i].b);
 	// int W = a->render()->bounds().width;
 	// int H = a->render()->bounds().height;
@@ -112,6 +122,7 @@ float Network::parseArg(const nUtils::ArgParams& p, Ant* a) const
 			float ret = 0, rv;
 			sf::Vector2f dat;
 			for (int i = 0; i < v.size(); i++){
+				// a->render()->pheromone().active[v[i]] = 1;
 				dat = a->render()->pheromone().data[v[i]];
 				if (p.type == 2)
 					rv = utils::math::magsq(dat);
@@ -311,6 +322,10 @@ void Network::tick(Ant* a)
 	for(int i = 0; i < _inputs.size(); i++)
 	{
 		_inputs[i].state = parseArg(_argparams[i], a);
+		if (std::isnan(_inputs[i].state)) {
+			std::cout << *this << std::endl;
+			throw std::runtime_error("NaN input DETECTED!!! Aborting...");
+		}
 	}
 
 	propogate();

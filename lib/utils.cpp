@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 23:36:54
+* @Last Modified time: 2021-05-28 00:44:11
 */
 #include <random>
 #include <cassert>
@@ -27,7 +27,7 @@ namespace utils {
 		}
 
 		// set seed (for testing)
-		// std::seed_seq seed = {1};
+		// std::seed_seq seed = {2};
 		// std::mt19937 random_engine(seed);
 
 		std::mt19937 random_engine = ProperlySeededRandomEngine();

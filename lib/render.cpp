@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 23:16:23
+* @Last Modified time: 2021-05-28 01:06:03
 */
 
 #include <iostream>
@@ -45,15 +45,15 @@ void Render::addHill(Hill h)
 void Render::populateRandom(int mincount, int maxcount)
 {
 	int count = utils::rand::urand(mincount, maxcount);
-	_hill_allocated = _TE/2/std::max(10,count);
+	_hill_allocated = INITIAL_ANTS*MAX_STOMACH_SIZE/2;
 
 	// uses some of the energy to create anthills
 	for (int i = 0; i < count; i++) {
-		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, _hill_allocated, this));
+		Render::addHill(Hill::randomHill(_bounds.width, _bounds.height, std::min(_hill_allocated, _TE/2/count), this));
 	}
 
 	// fill world using half the remaining energy
-	std::fill(_food.data.begin(), _food.data.end(), utils::math::polar2Cartesian(2*M_PI/3, (_TE-_hill_allocated*count)/2/_bounds.width/_bounds.height/FOOD_CONVERSION));
+	std::fill(_food.data.begin(), _food.data.end(), utils::math::polar2Cartesian(2*M_PI/3, (_TE-std::min(_hill_allocated, _TE/2/count)*count)/2/_bounds.width/_bounds.height/FOOD_CONVERSION));
 }
 
 void Render::render()

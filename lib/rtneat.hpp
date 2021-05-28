@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-28 00:24:29
+* @Last Modified time: 2021-05-28 01:05:28
 */
 
 #pragma once
@@ -17,15 +17,15 @@
 struct Ant;
 
 //max distance ants can see or smell
-const float MAX_SIGHT = 6;
+const float MAX_SIGHT = 10;
 // max view range of this fraction 360 degrees in each direction
 const float MAX_SIGHT_RANGE = .1f/.8f;
 
 const int OUTPUT_NODE_COUNT = 3;
 
-const float INITIAL_INPUT_CHANCE = 0.9;
-const float INITIAL_NODE_CHANCE = 0.95;
-const float INITIAL_CHILD_CHANCE = 0.6;
+const float INITIAL_INPUT_CHANCE = 0.8;
+const float INITIAL_NODE_CHANCE = 0.8;
+const float INITIAL_CHILD_CHANCE = 0.8;
 
 const float REMOVE_CHILD_CHANCE = 0.005;
 const float ADD_CHILD_CHANCE = 0.005;
@@ -59,7 +59,7 @@ namespace nUtils {
 
 	void MUTATE_ARG_PARAMS(ArgParams& a);
 
-	std::vector<int> POINTS_ON_ARC(const Ant* a, const std::vector<sf::Vector2f>& data, const float tmin, const float tmax, const float dist);
+	std::vector<int> POINTS_ON_ARC(Ant* a, const float tmin, const float tmax, const float dist, const float sparsity = 0.25f);
 
 	Node RANDOM_NODE(int);
 }
