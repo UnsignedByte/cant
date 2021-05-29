@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 21:43:19
+* @Last Modified time: 2021-05-29 11:59:01
 */
 #include <SFML/Graphics.hpp>
 // #include <SFML/OpenGL.hpp>
@@ -22,12 +22,12 @@ bool doRender = true;
 
 int main()
 {
-	int x = 0;
+	// int x = 0;
 	// Create the main window
 	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "c++an't [sic]");
 	window.setVerticalSyncEnabled(0);
 	sf::Clock renderClock;
-	sf::Time elapsed = sf::seconds(0);
+	// sf::Time elapsed = sf::seconds(0);
 
 	// glEnable(GL_TEXTURE_2D);
 
@@ -50,50 +50,56 @@ int main()
 		{
 			switch(event.type)
 			{
-			// Close window: exit
-			case sf::Event::Closed:
-				window.close();
-				break;
-			// case sf::Event::Resized:
-			// glViewport(0,0, event.size.width, event.size.height);
-			// 	break;
-			case sf::Event::KeyPressed:
-				switch(event.key.code)
-				{
-					case sf::Keyboard::W:
-						renderer.W = 1;
-						break;
-					case sf::Keyboard::A:
-						renderer.A = 1;
-						break;
-					case sf::Keyboard::S:
-						renderer.S = 1;
-						break;
-					case sf::Keyboard::D:
-						renderer.D = 1;
-						break;
-					case sf::Keyboard::R:
-						doRender ^= 1;
-						break;
-				}
-				break;
-			case sf::Event::KeyReleased:
-				switch(event.key.code)
-				{
-					case sf::Keyboard::W:
-						renderer.W = 0;
-						break;
-					case sf::Keyboard::A:
-						renderer.A = 0;
-						break;
-					case sf::Keyboard::S:
-						renderer.S = 0;
-						break;
-					case sf::Keyboard::D:
-						renderer.D = 0;
-						break;
-				}
-				break;
+				// Close window: exit
+				case sf::Event::Closed:
+					window.close();
+					break;
+				// case sf::Event::Resized:
+				// glViewport(0,0, event.size.width, event.size.height);
+				// 	break;
+				case sf::Event::KeyPressed:
+					switch(event.key.code)
+					{
+						case sf::Keyboard::W:
+							renderer.W = 1;
+							break;
+						case sf::Keyboard::A:
+							renderer.A = 1;
+							break;
+						case sf::Keyboard::S:
+							renderer.S = 1;
+							break;
+						case sf::Keyboard::D:
+							renderer.D = 1;
+							break;
+						case sf::Keyboard::R:
+							doRender ^= 1;
+							break;
+						default:
+							break;
+					}
+					break;
+				case sf::Event::KeyReleased:
+					switch(event.key.code)
+					{
+						case sf::Keyboard::W:
+							renderer.W = 0;
+							break;
+						case sf::Keyboard::A:
+							renderer.A = 0;
+							break;
+						case sf::Keyboard::S:
+							renderer.S = 0;
+							break;
+						case sf::Keyboard::D:
+							renderer.D = 0;
+							break;
+						default:
+							break;
+					}
+					break;
+				default:
+					break;
 			}
 		}
 

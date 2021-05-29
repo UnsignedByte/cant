@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:48
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-28 01:05:28
+* @Last Modified time: 2021-05-29 12:01:04
 */
 
 #pragma once
@@ -19,13 +19,13 @@ struct Ant;
 //max distance ants can see or smell
 const float MAX_SIGHT = 10;
 // max view range of this fraction 360 degrees in each direction
-const float MAX_SIGHT_RANGE = .1f/.8f;
+const float MAX_SIGHT_RANGE = .1f/.2f;
 
 const int OUTPUT_NODE_COUNT = 3;
 
 const float INITIAL_INPUT_CHANCE = 0.8;
 const float INITIAL_NODE_CHANCE = 0.8;
-const float INITIAL_CHILD_CHANCE = 0.8;
+const float INITIAL_CHILD_CHANCE = 0.95;
 
 const float REMOVE_CHILD_CHANCE = 0.005;
 const float ADD_CHILD_CHANCE = 0.005;

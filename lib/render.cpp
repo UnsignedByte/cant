@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-28 01:06:03
+* @Last Modified time: 2021-05-29 12:26:50
 */
 
 #include <iostream>
@@ -11,6 +11,20 @@
 // 1800 = 60 seconds worth of energy
 
 void DrawableImg::loadImg() {
+	// //update image with new colors
+	// std::list<int>::iterator it;
+	// for(it = activeList.begin(); it != activeList.end(); it++)
+	// {
+	// 	// std::cout << utils::math::mag(data[*it]) << std::endl;
+
+	// 	// DEBUG VIEW: shows whether a pixel is active
+	// 	// _img.setPixel(*it%_W, *it/_W, sf::Color(255,255,255));
+
+	// 	_img.setPixel(*it%_W, *it/_W, utils::HS_vec_to_RGBA(data[*it], _opacity));
+	// 	// _pheromoneImg.setPixel(j, i, sf::Color(255,0,0));
+	// 	// printf("test\n");
+	// }
+
 	//update image with new colors
 	for(int i = 0; i < _H; i++)
 	{
@@ -54,6 +68,10 @@ void Render::populateRandom(int mincount, int maxcount)
 
 	// fill world using half the remaining energy
 	std::fill(_food.data.begin(), _food.data.end(), utils::math::polar2Cartesian(2*M_PI/3, (_TE-std::min(_hill_allocated, _TE/2/count)*count)/2/_bounds.width/_bounds.height/FOOD_CONVERSION));
+	// std::fill(_food.active.begin(), _food.active.end(), 1);
+	// for (int i = 0; i < _bounds.width*_bounds.height; i++) {
+	// 	_food.activeList.push_back(i);
+	// }	
 }
 
 void Render::render()
@@ -84,38 +102,130 @@ void Render::tick() //tick all hills and then all ants
 	_E = 0;
 	_pheromone.data.swap(_pheromone.dataOld);
 	_pheromone.active.swap(_pheromone.activeOld);
+	// _pheromone.activeList.swap(_pheromone.activeListOld);
+	// _food.data.swap(_food.dataOld);
+	// _food.activeList.swap(_food.activeListOld);
+	// _food.active.swap(_food.active);
+
+	// printf("%li, %li\n", _food.activeList.size(), _food.activeListOld.size());
+
+
 	for(int i = 0; i < _bounds.height; i++)
 	{
 		for (int j = 0; j < _bounds.width; j++)
 		{
 			int idx = i*_bounds.width+j;
 			_food.data[idx]*=(1-FOOD_DECAY_RATE);
-			_E += utils::math::mag(_food.data[idx]);
+			_E += utils::math::mag(_food.data[idx])*FOOD_CONVERSION;
 
 			_pheromone.data[idx] = sf::Vector2f(0,0);
 			_pheromone.active[idx] = 0;
 			if (_pheromone.activeOld[idx])
 			{
-				if (utils::math::magsq(_pheromone.dataOld[idx]) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
+				_pheromone.data[idx] = _pheromone.dataOld[idx]*(1.f-PHEROMONE_DECAY_RATE)*(1.f-PHEROMONE_SPREAD_RATE);
+				// if (utils::math::magsq(_pheromone.dataOld[idx]) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
+				// 	// ACTIVE_COUNT++;
+				// 	_pheromone.active[idx] = 1;
+				// 	_pheromone.data[idx] = _pheromone.dataOld[idx]*(1.f-DECAY_RATE);
+					
+				// 	sf::Vector2f mn = _pheromone.dataOld[idx]*DECAY_RATE/8.f;
+
+				// 	// loop through neighbours and spread pheromone if above cutoff
+				// 	if (utils::math::magsq(mn) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
+				// 		for (int k = 0; k < 8; k++) {
+				// 			int nidx = arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(j+NEIGHBORS[2*k], _bounds.width);
+				// 			_pheromone.data[nidx] += mn;
+				// 			_pheromone.active[nidx] = 1;
+				// 		}
+				// 	}
+				// }
+			}
+		}
+	}
+
+	for(int i = 0; i < _bounds.height; i++)
+	{
+		for (int j = 0; j < _bounds.width; j++)
+		{
+			int idx = i*_bounds.width+j;
+			if (_pheromone.activeOld[idx]) {
+				// _pheromone.data[it] = _pheromone.dataOld[it]*(1.f-PHEROMONE_DECAY_RATE)*(1.f-PHEROMONE_SPREAD_RATE);
+				if (utils::math::magsq(_pheromone.data[idx]) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
 					// ACTIVE_COUNT++;
 					_pheromone.active[idx] = 1;
-					_pheromone.data[idx] = _pheromone.dataOld[idx]*(1.f-DECAY_RATE);
 					
-					sf::Vector2f mn = _pheromone.dataOld[idx]*DECAY_RATE/8.f;
+					sf::Vector2f mn = _pheromone.dataOld[idx]*PHEROMONE_SPREAD_RATE/8.f*(1.f-PHEROMONE_DECAY_RATE);
 
 					// loop through neighbours and spread pheromone if above cutoff
 					if (utils::math::magsq(mn) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
 						for (int k = 0; k < 8; k++) {
 							int nidx = arimod(i+NEIGHBORS[2*k+1], _bounds.height)*_bounds.width+arimod(j+NEIGHBORS[2*k], _bounds.width);
 							_pheromone.data[nidx] += mn;
-							_pheromone.active[nidx] = 1;
-						}
+							_pheromone.active[nidx] = 1;						}
 					}
 				}
+			} else {
+				_pheromone.data[idx] = sf::Vector2f(0,0);
+				_pheromone.active[idx] = 0;
 			}
 		}
 	}
 
+	// std::list<int>::iterator nit;
+
+	// for (nit = _pheromone.activeListOld.begin(); nit != _pheromone.activeListOld.end(); nit++) {
+	// 	_pheromone.data[*nit] = _pheromone.dataOld[*nit]*(1.f-PHEROMONE_DECAY_RATE)*(1.f-PHEROMONE_SPREAD_RATE);
+	// }
+
+
+	// int it;
+
+	// while(!_pheromone.activeListOld.empty()) {
+	// 	it = _pheromone.activeListOld.front();
+	// 	// _pheromone.data[it] = _pheromone.dataOld[it]*(1.f-PHEROMONE_DECAY_RATE)*(1.f-PHEROMONE_SPREAD_RATE);
+	// 	if (utils::math::magsq(_pheromone.data[it]) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
+	// 		// ACTIVE_COUNT++;
+	// 		if (!_pheromone.active[it]) {
+	// 			_pheromone.active[it] = 1;
+	// 			_pheromone.activeList.push_back(it);
+	// 		}
+			
+	// 		sf::Vector2f mn = _pheromone.dataOld[it]*PHEROMONE_SPREAD_RATE/8.f*(1.f-PHEROMONE_DECAY_RATE);
+
+	// 		// loop through neighbours and spread pheromone if above cutoff
+	// 		if (utils::math::magsq(mn) > DEACTIVATE_MAG*DEACTIVATE_MAG) {
+	// 			for (int k = 0; k < 8; k++) {
+	// 				int nidx = arimod(it+NEIGHBORS[2*k+1]* _bounds.width + NEIGHBORS[2*k], _bounds.width*_bounds.height);
+	// 				_pheromone.data[nidx] += mn;
+	// 				if (!_pheromone.active[nidx]) {
+	// 					_pheromone.active[nidx] = 1;
+	// 					_pheromone.activeList.push_back(nidx);
+	// 				}
+	// 			}
+	// 		}
+	// 	} else {
+	// 		_pheromone.data[it] = sf::Vector2f(0,0);
+	// 		_pheromone.active[it] = 0;
+	// 	}
+	// 	_pheromone.activeListOld.pop_front();
+	// }
+
+	// while(!_food.activeListOld.empty()) {
+	// 	it = _food.activeListOld.front();
+	// 	_food.active[it] = 0;
+	// 	sf::Vector2f mn = _food.dataOld[it] * (1-FOOD_DECAY_RATE);
+	// 	float f = utils::math::mag(mn);
+	// 	if (f > DEACTIVATE_MAG) {
+	// 		// printf("activating\n");
+	// 		_E += f;
+	// 		_food.data[it] = mn;
+	// 		if (!_food.active[it]) {
+	// 			_food.active[it] = 1;
+	// 			_food.activeList.push_back(it);
+	// 		}
+	// 	}
+	// 	_food.activeListOld.pop_front();
+	// }
 	// printf("%d out of %d active; deactivated %d\n", ACTIVE_COUNT, _bounds.width*_bounds.height, DEACTIVATED_COUNT);
 
 
@@ -138,6 +248,10 @@ void Render::tick() //tick all hills and then all ants
 		int idx = utils::rand::urand(0, _bounds.height)*_bounds.width + utils::rand::urand(0, _bounds.width);
 		// int idx = _bounds.width*_bounds.height/2;
 		_food.data[idx] = utils::math::polar2Cartesian(2*M_PI/3, utils::math::mag(_food.data[idx])+1);
+		// if (!_food.active[idx]) {
+		// 	_food.active[idx] = 1;
+		// 	_food.activeList.push_back(idx);
+		// }
 	}
 
 	// FOOD SPREADING
@@ -145,11 +259,18 @@ void Render::tick() //tick all hills and then all ants
 	c = (int) _bounds.width*_bounds.height*SPREAD_FOOD_CHANCE;
 	for (int i = 0; i < c; i++) {
 		sf::Vector2f idx(utils::rand::urand(0, _bounds.height), utils::rand::urand(0, _bounds.width));
-		sf::Vector2f offset = arfmod(idx+sf::Vector2f(utils::rand::urand(-3,4), utils::rand::urand(-3,4)), sf::Vector2f(_bounds.width, _bounds.height));
+		sf::Vector2f offset = arfmod(idx+sf::Vector2f(utils::rand::urand(-2,3), utils::rand::urand(-2,3)), sf::Vector2f(_bounds.width, _bounds.height));
 		int ii = idx.y*_bounds.width+idx.x;
 		int oi = offset.y*_bounds.width+offset.x;
 		// int idx = _bounds.width*_bounds.height/2;
-		_food.data[oi] = utils::math::polar2Cartesian(2*M_PI/3, std::min(MAX_STOMACH_SIZE/FOOD_CONVERSION/16.f, utils::math::mag(_food.data[oi])+std::min(remainingE, 0.5f*utils::math::mag(_food.data[ii]))));
+		float nmag = std::min(MAX_STOMACH_SIZE/FOOD_CONVERSION/8.f, utils::math::mag(_food.data[oi])+std::min(remainingE, 0.5f*utils::math::mag(_food.data[ii])));
+		if (nmag > DEACTIVATE_MAG) {
+			_food.data[oi] = utils::math::polar2Cartesian(2*M_PI/3, nmag);
+			// if (!_food.active[oi]) {
+			// 	_food.active[oi] = 1;
+			// 	_food.activeList.push_back(oi);
+			// }
+		}
 	}
 	// printf("%lf, %lf\n", E(), _E);
 

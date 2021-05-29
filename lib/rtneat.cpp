@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-05-24 10:13:55
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-28 01:05:59
+* @Last Modified time: 2021-05-28 19:17:32
 */
 
 #include <stdexcept>
@@ -370,9 +370,12 @@ std::ostream& operator<<(std::ostream &os, const Network& n) {
 
 void Network::prune() {
 
-	bool visited[N()] = {0};
+	bool visited[N()];
 	// TRUE if node is not a dead end
-	bool dead[N()] = {0};
+	bool dead[N()];
+
+	std::fill_n(visited, N(), 0);
+	std::fill_n(dead, N(), 0);
 
 	for (int i = 0; i < _inputs.size(); i++) {
 		bool valid = 0;
@@ -467,7 +470,7 @@ bool Network::_prune_prop(int i, bool* visited, bool* dead) {
 	//should initially already be 0
 	dead[i-_ocount] = 1;
 
-	bool d;
+	bool d = 0;
 
 	for (int j = 0; j < _nodes[i].children.size(); j++) {
 		// return TRUE if node is self-referencing, or if it is prunable

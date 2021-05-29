@@ -2,25 +2,27 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 16:32:27
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 22:22:27
+* @Last Modified time: 2021-05-29 12:10:18
 */
 
 #pragma once
 #include <iostream>
-#include "hill.hpp"
 #include <stdexcept>
 #include <SFML/OpenGL.hpp>
+// #include <list>
+#include "hill.hpp"
 
 const float FOOD_CONVERSION = 1.f;
 const float FOOD_OPACITY = 0.3f;
-const float PHEROMONE_OPACITY = 5.f;
+const float PHEROMONE_OPACITY = 2.f;
 
 const int NEIGHBORS[] = {1, 1, 1, 0, 1, -1, 0, 1, 0, -1, -1, 1, -1, 0, -1, -1};
-const float DECAY_RATE = 0.01f;
+const float PHEROMONE_DECAY_RATE = 0.001f;
+const float PHEROMONE_SPREAD_RATE = 0.3f;
 const float FOOD_DECAY_RATE = 0.001f;
 const float DEACTIVATE_MAG = 0.001;
 const float HILL_BIRTH_CHANCE = 1.f/900.f;
-const float RANDOM_HILL_CHANCE = 0.01f;
+const float RANDOM_HILL_CHANCE = 1.f;
 // chance of a given pixel to spread food
 const float SPREAD_FOOD_CHANCE = 0.01;
 
@@ -41,10 +43,9 @@ struct DrawableImg {
 	sf::Image& img();
 	sf::Sprite& sprite();
 
-	std::vector<sf::Vector2f> data;
-	std::vector<sf::Vector2f> dataOld;
-	std::vector<bool> active;
-	std::vector<bool> activeOld;
+	std::vector<sf::Vector2f> data, dataOld;
+	std::vector<bool> active, activeOld;
+	// std::list<int> activeList, activeListOld;
 private:
 	int _W, _H;
 	float _opacity;
@@ -70,7 +71,7 @@ public:
 
 		// create empty pheromone image
 		_pheromone = DrawableImg(WIDTH, HEIGHT, PHEROMONE_OPACITY);
-		_food = DrawableImg(WIDTH, HEIGHT, FOOD_OPACITY*(WIDTH*HEIGHT)/_TE);
+		_food = DrawableImg(WIDTH, HEIGHT, FOOD_CONVERSION*FOOD_OPACITY*(WIDTH*HEIGHT)/_TE);
 
 		// sf::Texture::bind(&_world.getTexture());
 

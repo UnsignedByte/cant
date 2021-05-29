@@ -2,7 +2,7 @@
 * @Author: UnsignedByte
 * @Date:   2021-04-11 11:24:20
 * @Last Modified by:   UnsignedByte
-* @Last Modified time: 2021-05-27 14:58:52
+* @Last Modified time: 2021-05-29 12:09:54
 */
 #include <SFML/Graphics.hpp>
 #include "ant.hpp"
@@ -43,12 +43,20 @@ void Ant::tick()
 	_E += eatVal;
 	// remove this food from the screen
 	_render->food().data[pidx] = utils::math::polar2Cartesian(2*M_PI/3, currFood-eatVal/FOOD_CONVERSION);
+	// if (!_render->food().active[pidx]) {
+	// 	_render->food().active[pidx] = 1;
+	// 	_render->food().activeList.push_back(pidx);
+	// }
 	// remove this food from global energy use
 	// _render->_E -= eatVal;
 
 	// drop pheromone at tile
 	_render->pheromone().data[pidx] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
 	_render->pheromone().active[pidx] = 1;
+	// if (!_render->pheromone().active[pidx]) {
+	// 	_render->pheromone().active[pidx] = 1;
+	// 	_render->pheromone().activeList.push_back(pidx);
+	// }
 	// for(int i = 0; i < sizeof(DOT)/sizeof(int)/2; i++){
 	// 	_render->pheromone().data[arimod((int)_pos.y+DOT[i*2+1], _render->bounds().height) * _render->bounds().width + arimod((int) _pos.x + DOT[i*2], _render->bounds().width)] += utils::math::polar2Cartesian(_brain.output(1), std::tanh(_brain.output(2)));
 	// }
